@@ -1,0 +1,1922 @@
+<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PUERICULTURA DRA SCHWARTZ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      /* Tema lilás */
+      --rosa1: #7e57c2;
+      --rosa2: #5e35b1;
+      --rosa3: #b39ddb;
+      --rosa-claro: #f3e5f5;
+      --bg: #f8f5ff;
+      --texto: #333;
+      --card: #ffffff;
+      --borda: #e0e0e0;
+
+      --risk-habitual: #e8f5e9;
+      --risk-inter: #fff3e0;
+      --risk-alto: #ffebee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--texto);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--rosa1), var(--rosa2));
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header small {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .tag-ubs {
+      background: rgba(255,255,255,0.18);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    main {
+      padding: 16px;
+      max-width: 960px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      border: 1px solid var(--borda);
+    }
+
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card h3 {
+      margin: 16px 0 8px;
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      margin-bottom: 3px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid #d0d0d0;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+      background: #fafafa;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--rosa2);
+      box-shadow: 0 0 0 2px rgba(94,53,177,0.18);
+      background: #ffffff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .field-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      align-items: center;
+      gap: 6px;
+      background: #f1f1f1;
+      margin: 2px;
+    }
+
+    .chip input {
+      margin: 0;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--rosa1);
+      color: white;
+      box-shadow: 0 4px 10px rgba(94,53,177,0.30);
+      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--rosa2);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(94,53,177,0.45);
+    }
+
+    .btn.secondary {
+      background: #ffffff;
+      color: var(--rosa2);
+      border: 1px solid var(--rosa3);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: var(--rosa-claro);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .btn.sm {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      box-shadow: none;
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill.habitual {
+      background: var(--risk-habitual);
+      color: #1b5e20;
+    }
+
+    .pill.inter {
+      background: var(--risk-inter);
+      color: #8d6e00;
+    }
+
+    .pill.alto {
+      background: var(--risk-alto);
+      color: #b71c1c;
+    }
+
+    .pill.small {
+      font-size: 0.68rem;
+      padding: 1px 6px;
+    }
+
+    .age-box {
+      font-size: 0.8rem;
+      background: #f5f5ff;
+      padding: 6px 8px;
+      border-radius: 10px;
+      margin-top: 4px;
+      line-height: 1.3;
+      border: 1px dashed #c5cae9;
+    }
+
+    .age-box strong {
+      font-size: 0.78rem;
+    }
+
+    .alert-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 4px 0 0;
+      font-size: 0.8rem;
+    }
+
+    .alert-list li {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .alert-icon {
+      font-size: 0.9rem;
+    }
+
+    .child-list {
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+
+    .child-card {
+      border-radius: 12px;
+      padding: 10px 9px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.12s, border 0.12s, transform 0.08s, box-shadow 0.12s;
+      background: #fafafa;
+    }
+    .child-card.risco-habitual {
+      border-left: 4px solid #2e7d32;
+      background: #f1f8e9;
+    }
+    .child-card.risco-intermediario {
+      border-left: 4px solid #f9a825;
+      background: #fffde7;
+    }
+    .child-card.risco-alto {
+      border-left: 4px solid #c62828;
+      background: #ffebee;
+    }
+
+    .child-card:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .child-card.active {
+      border-color: var(--rosa2);
+      box-shadow: 0 0 0 1px rgba(94,53,177,0.35);
+      background: #ffffff;
+    }
+
+    .child-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 2px;
+    }
+
+    .child-name {
+      font-weight: 600;
+    }
+
+    .child-meta {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    .small-text {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 8px 0;
+    }
+
+    .section-inline-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .info-text {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    .badge-alert {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #fff3cd;
+      color: #8a6d3b;
+    }
+
+    .badge-ok {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .muted {
+      opacity: 0.7;
+    }
+
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+
+    /* Modal histórico */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: #fff;
+      max-width: 960px;
+      width: 96%;
+      max-height: 90vh;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .modal h3 {
+      margin-top: 0;
+    }
+
+    .hist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin-top: 8px;
+    }
+
+    .hist-table th,
+    .hist-table td {
+      border-bottom: 1px solid #eee;
+      padding: 3px 4px;
+      text-align: left;
+    }
+
+    .hist-table th {
+      background: #f3e5f5;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    /* Curvas visuais simples */
+    .curve-container {
+      margin-top: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 8px;
+      background: #fafafa;
+    }
+
+    .curve-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .curve-plot {
+      position: relative;
+      height: 120px;
+      border-radius: 6px;
+      background: linear-gradient(to top, #fce4ec 0%, #fff 50%, #e3f2fd 100%);
+      overflow: hidden;
+    }
+
+    .curve-plot::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 3%;
+      height: 1px;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .curve-point {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rosa2);
+      transform: translate(-50%, 50%);
+      box-shadow: 0 0 0 2px rgba(94,53,177,0.3);
+    }
+
+    .curve-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      margin-top: 4px;
+      gap: 4px;
+    }
+
+    .curve-label {
+      flex: 1;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+      header, .no-print, .modal-overlay {
+        display: none !important;
+      }
+      main {
+        display: block;
+        padding: 0;
+      }
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+        padding: 0;
+      }
+      #printView {
+        display: block;
+      }
+      #appView {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- ESTILO EXTRA PARA A TELA DE LOGIN -->
+  <style>
+    #login-container {
+      max-width: 380px;
+      margin: 40px auto;
+      padding: 24px 20px 28px;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border: 1px solid #e0e0f5;
+    }
+
+    #login-container h2 {
+      margin-top: 0;
+      margin-bottom: 4px;
+      text-align: center;
+      color: #5e35b1;
+      font-size: 1.3rem;
+    }
+
+    #login-container p.subtitle {
+      margin: 0 0 16px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    #login-container label {
+      margin-top: 10px;
+    }
+
+    #login-container input[type="email"],
+    #login-container input[type="password"] {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+      background: #fafafa;
+    }
+
+    #login-container input[type="email"]:focus,
+    #login-container input[type="password"]:focus {
+      border-color: #5e35b1;
+      box-shadow: 0 0 0 2px rgba(94,53,177,0.18);
+      background: white;
+    }
+
+    #login-submit {
+      width: 100%;
+      padding: 11px;
+      margin-top: 16px;
+      border-radius: 999px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #7e57c2, #5e35b1);
+      color: white;
+      box-shadow: 0 4px 12px rgba(76,37,179,0.45);
+      transition: transform 0.12s, box-shadow 0.12s, filter 0.12s;
+      cursor: pointer;
+    }
+
+    #login-submit:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 6px 16px rgba(76,37,179,0.55);
+    }
+
+    #login-submit:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(76,37,179,0.4);
+    }
+
+    #login-error {
+      color: #b71c1c;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    #logout-btn {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #ff5252;
+      color: white;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(183,28,28,0.45);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN -->
+  <div id="login-container">
+    <h2>Login – Puericultura</h2>
+    <p class="subtitle">Acesse com o e-mail cadastrado pela Dra. Schwartz</p>
+
+    <form id="login-form">
+      <label for="login-email">E-mail</label>
+      <input type="email" id="login-email" autocomplete="email" required>
+
+      <label for="login-password">Senha</label>
+      <input type="password" id="login-password" autocomplete="current-password" required>
+
+      <button id="login-submit" type="submit">Entrar</button>
+    </form>
+
+    <p id="login-error" style="display:none;"></p>
+  </div>
+
+  <!-- ÁREA PROTEGIDA -->
+  <div id="app-container" style="display:none;">
+
+    <header class="no-print">
+      <div>
+        <h1>👶 PUERICULTURA DRA SCHWARTZ 👶</h1>
+        <small>Seguimento de 0 a 2 anos · Linha de Cuidado da Criança – PR</small>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <div class="tag-ubs">
+          🩺 Uso interno UBS · Criança & Família
+        </div>
+        <button id="logout-btn" type="button" class="no-print">⏏ Sair</button>
+      </div>
+    </header>
+
+    <div id="appView">
+      <main>
+        <!-- FORMULÁRIO PRINCIPAL -->
+        <section class="card">
+          <h2>
+            Dados da criança & consulta 👶
+            <button type="button" class="btn sm secondary no-print" id="btnNovaCrianca">Nova criança</button>
+          </h2>
+          <p class="subtitle">
+            Preencha os dados principais da criança e da consulta atual. As informações ficam salvas neste computador (localStorage).
+          </p>
+
+          <input type="hidden" id="childId">
+
+          <h3>Identificação</h3>
+
+          <div class="grid-2">
+            <div>
+              <label for="ubsNome">UBS atendida</label>
+              <input type="text" id="ubsNome" autocomplete="off" placeholder="Ex: UBS Vila Nova">
+            </div>
+            <div>
+              <label for="nome">Nome da criança</label>
+              <input type="text" id="nome" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="grid-2 mt-8">
+            <div>
+              <label for="nomeMae">Nome da mãe / cuidador principal</label>
+              <input type="text" id="nomeMae" autocomplete="off">
+            </div>
+            <div>
+              <label for="viaParto">Via de parto</label>
+              <select id="viaParto">
+                <option value="">Não informado</option>
+                <option value="vaginal">Vaginal</option>
+                <option value="cesarea">Cesárea</option>
+                <option value="forceps">Fórceps / vácuo-extrator</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label for="dataNasc">Data de nascimento</label>
+              <input type="date" id="dataNasc">
+            </div>
+            <div>
+              <label for="igSemanas">IG ao nascer (semanas)</label>
+              <input type="number" id="igSemanas" min="20" max="42" step="1" placeholder="ex: 32">
+            </div>
+            <div>
+              <label for="pesoNascimento">Peso ao nascer (g)</label>
+              <input type="number" id="pesoNascimento" min="300" max="6000" step="1" placeholder="ex: 3200">
+            </div>
+          </div>
+
+          <div class="age-box mt-8" id="idadeBox">
+            <strong>Idade na data da consulta:</strong>
+            <div>Cronológica: —</div>
+            <div>Idade corrigida (se prematuro): —</div>
+          </div>
+
+          <h3>Condições maternas & contexto familiar</h3>
+          <div class="grid-2">
+            <div>
+              <label>Marcadores de vulnerabilidade materna/familiar</label>
+              <div class="field-inline" id="condMaternasGroup">
+                <label class="chip"><input type="checkbox" data-cond-mat="HAS"> HAS</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="DM"> DM</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Depressão/TPM"> Depressão / TP grave</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Uso de álcool/drogas"> Álcool/drogas</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Violência doméstica"> Violência</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Mãe adolescente"> Mãe adolescente</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Baixa escolaridade"> Baixa escolaridade</label>
+                <label class="chip"><input type="checkbox" data-cond-mat="Pouco suporte familiar"> Pouco suporte familiar</label>
+              </div>
+              <label for="doencasMaternas" class="mt-8">Outras doenças maternas relevantes</label>
+              <textarea id="doencasMaternas" placeholder="Ex: cardiopatia, doença autoimune, outras..."></textarea>
+            </div>
+            <div>
+              <label>Exposição / doença infectocontagiosa</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" id="exposicaoSifilis"> Sífilis materna / congênita</label>
+                <label class="chip"><input type="checkbox" id="exposicaoHiv"> HIV</label>
+                <label class="chip"><input type="checkbox" id="exposicaoHep"> Hepatites</label>
+                <label class="chip"><input type="checkbox" id="exposicaoOutras"> Outras (STORCH etc.)</label>
+              </div>
+              <label for="infectoObs" class="mt-8">Plano de seguimento / exames de controle</label>
+              <textarea id="infectoObs" placeholder="Ex: esquema de VDRL, sorologias seriadas, avaliações especializadas..."></textarea>
+            </div>
+          </div>
+
+          <h3>Triagens neonatais</h3>
+          <div class="grid-2">
+            <div>
+              <label for="triagemPezinho">Teste do pezinho</label>
+              <select id="triagemPezinho">
+                <option value="">Não informado</option>
+                <option value="normal">Realizado - normal</option>
+                <option value="alterado">Realizado - alterado</option>
+                <option value="nao">Não realizado</option>
+              </select>
+            </div>
+            <div>
+              <label for="triagemOlhinho">Teste do olhinho</label>
+              <select id="triagemOlhinho">
+                <option value="">Não informado</option>
+                <option value="normal">Realizado - normal</option>
+                <option value="alterado">Realizado - alterado</option>
+                <option value="nao">Não realizado</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-3 mt-8">
+            <div>
+              <label for="triagemOrelhinha">Teste da orelhinha</label>
+              <select id="triagemOrelhinha">
+                <option value="">Não informado</option>
+                <option value="normal">Realizado - normal</option>
+                <option value="alterado">Realizado - alterado</option>
+                <option value="nao">Não realizado</option>
+              </select>
+            </div>
+            <div>
+              <label for="triagemCoracao">Teste do coraçãozinho</label>
+              <select id="triagemCoracao">
+                <option value="">Não informado</option>
+                <option value="normal">Realizado - normal</option>
+                <option value="alterado">Realizado - alterado</option>
+                <option value="nao">Não realizado</option>
+              </select>
+            </div>
+            <div>
+              <label for="triagemLinguinha">Teste da linguinha</label>
+              <select id="triagemLinguinha">
+                <option value="">Não informado</option>
+                <option value="normal">Realizado - normal</option>
+                <option value="alterado">Realizado - alterado</option>
+                <option value="nao">Não realizado</option>
+              </select>
+            </div>
+          </div>
+
+          <h3>Estratificação de risco global</h3>
+          <div class="field-inline">
+            <label for="riscoGlobal">Risco atual</label>
+            <select id="riscoGlobal">
+              <option value="habitual">Habitual</option>
+              <option value="intermediario">Intermediário</option>
+              <option value="alto">Alto risco</option>
+            </select>
+            <span class="small-text">Rever a cada consulta conforme Linha de Cuidado.</span>
+          </div>
+
+          <h3>Seguimento diferenciado / exames de controle</h3>
+          <div class="field-inline">
+            <label class="chip">
+              <input type="checkbox" id="flagAcomp">
+              Necessita acompanhamento diferenciado / exames seriados
+            </label>
+          </div>
+          <div class="mt-8">
+            <label for="flagAcompObs">Descrição do plano (exames, retornos, especialistas)</label>
+            <textarea id="flagAcompObs" placeholder="Ex: controle VDRL trimestral, retorno mensal, neuropediatria, fisioterapia..."></textarea>
+          </div>
+
+          <h3>Consulta atual – dados antropométricos</h3>
+          <div class="grid-3">
+            <div>
+              <label for="dataConsulta">Data da consulta</label>
+              <input type="date" id="dataConsulta">
+            </div>
+            <div>
+              <label for="peso">Peso (kg)</label>
+              <input type="number" id="peso" min="0" step="0.01" placeholder="ex: 4.350">
+            </div>
+            <div>
+              <label for="altura">Comprimento/altura (cm)</label>
+              <input type="number" id="altura" min="20" step="0.1" placeholder="ex: 54.0">
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label for="pc">Perímetro cefálico (cm)</label>
+              <input type="number" id="pc" min="20" step="0.1">
+            </div>
+            <div>
+              <label for="imc">IMC (kg/m²) – calculado</label>
+              <input type="number" id="imc" readonly>
+            </div>
+            <div>
+              <label for="obsAntropo">Observação antropométrica</label>
+              <input type="text" id="obsAntropo" placeholder="Ex: ganho ponderal adequado, queda de percentil...">
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label for="pPeso">Percentil Peso/Idade (P)</label>
+              <input type="number" id="pPeso" min="0" max="100" step="0.1" placeholder="ex: 25">
+            </div>
+            <div>
+              <label for="pAltura">Percentil Altura/Idade (P)</label>
+              <input type="number" id="pAltura" min="0" max="100" step="0.1">
+            </div>
+            <div>
+              <label for="pPc">Percentil PC/Idade (P)</label>
+              <input type="number" id="pPc" min="0" max="100" step="0.1">
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label for="pImc">Percentil IMC/Idade (P) (a partir de 2 anos)</label>
+              <input type="number" id="pImc" min="0" max="100" step="0.1">
+            </div>
+            <div>
+              <label>Estratificação antropométrica automática</label>
+              <div id="riscoAntropoPill" class="pill small">Preencha os percentis para classificar.</div>
+            </div>
+          </div>
+
+          <h3>Vacinas</h3>
+          <p class="small-text">
+            Calendário Nacional de Vacinação – Criança (0 a 4 anos). Marque as doses já realizadas;
+            o sistema sinaliza o que está pendente para a idade.
+          </p>
+
+          <div class="grid-3">
+            <div>
+              <label>Ao nascer</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="bcg"> BCG</label>
+                <label class="chip"><input type="checkbox" data-vacina="hepB0"> Hepatite B RN</label>
+              </div>
+            </div>
+
+            <div>
+              <label>2 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="penta1"> Penta (DTP+Hib+HB) 1ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="vip1"> VIP 1ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="pneumo1"> Pneumo 10V 1ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="rota1"> Rotavírus 1ª</label>
+              </div>
+            </div>
+
+            <div>
+              <label>3 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="menC1_3m"> MenC 1ª</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label>4 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="penta2"> Penta 2ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="vip2"> VIP 2ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="pneumo2"> Pneumo 10V 2ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="rota2"> Rotavírus 2ª</label>
+              </div>
+            </div>
+
+            <div>
+              <label>5 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="menC2_5m"> MenC 2ª</label>
+              </div>
+            </div>
+
+            <div>
+              <label>6 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="penta3"> Penta 3ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="vip3"> VIP 3ª</label>
+                <label class="chip"><input type="checkbox" data-vacina="influenza6m"> Influenza (1ª vez)</label>
+                <label class="chip"><input type="checkbox" data-vacina="covid1_6m"> Covid-19 1ª</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label>7 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="covid2_7m"> Covid-19 2ª</label>
+              </div>
+            </div>
+
+            <div>
+              <label>9 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="fa9m"> Febre amarela</label>
+                <label class="chip"><input type="checkbox" data-vacina="covid3_9m"> Covid-19 3ª</label>
+              </div>
+            </div>
+
+            <div>
+              <label>12 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="pneumoRef"> Pneumo 10V reforço</label>
+                <label class="chip"><input type="checkbox" data-vacina="menACWY_12m"> Men ACWY</label>
+                <label class="chip"><input type="checkbox" data-vacina="triplice1"> Tríplice viral 1ª</label>
+                <!-- Hep A removida daqui -->
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3 mt-8">
+            <div>
+              <label>15 meses</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="dtpR1"> DTP 1º reforço</label>
+                <label class="chip"><input type="checkbox" data-vacina="vipRef_15m"> VIP reforço</label>
+                <label class="chip"><input type="checkbox" data-vacina="tetra_15m"> Tetraviral (SCRV)</label>
+                <label class="chip"><input type="checkbox" data-vacina="hepA"> Hepatite A</label>
+              </div>
+            </div>
+
+            <div>
+              <label>4 anos</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="dtpR2_4a"> DTP 2º reforço</label>
+                <label class="chip"><input type="checkbox" data-vacina="faRef_4a"> Febre amarela reforço</label>
+                <label class="chip"><input type="checkbox" data-vacina="varicela_4a"> Varicela</label>
+              </div>
+            </div>
+
+            <div>
+              <label>Campanha influenza</label>
+              <div class="field-inline">
+                <label class="chip"><input type="checkbox" data-vacina="influenzaAnual"> Influenza atualizada</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-text">
+            <span id="statusVacinas" class="badge-ok">Vacinas: informe data de nascimento para cálculo da idade.</span>
+          </div>
+
+          <h3>Desenvolvimento & orientações</h3>
+          <div class="grid-2">
+            <div>
+              <label for="desenvolvimento">Principais marcos observados</label>
+              <textarea id="desenvolvimento" placeholder="Ex: sustenta bem a cabeça, rola, senta com apoio, balbucia, contato visual adequado..."></textarea>
+            </div>
+            <div>
+              <label for="orientacoes">Orientações na consulta</label>
+              <textarea id="orientacoes" placeholder="Alimentação, estímulos, segurança, retorno programado, encaminhamentos..."></textarea>
+            </div>
+          </div>
+
+          <h3>Plano de seguimento / retorno</h3>
+          <div class="grid-2">
+            <div>
+              <label for="planoRetornoSug">Sugestão de retorno</label>
+              <select id="planoRetornoSug">
+                <option value="">Não definido</option>
+                <option value="15d">Retorno em 15 dias</option>
+                <option value="1m">Retorno em 1 mês</option>
+                <option value="2m">Retorno em 2 meses</option>
+                <option value="3m">Retorno em 3 meses</option>
+              </select>
+              <p class="small-text">
+                O sistema sugere automaticamente conforme o risco (pode ajustar manualmente).
+              </p>
+            </div>
+            <div>
+              <label for="planoRetornoLivre">Detalhe do seguimento</label>
+              <textarea id="planoRetornoLivre" placeholder="Ex: retorno médico + enfermagem, visita domiciliar, matriciamento, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="section-inline-actions mt-12 no-print">
+            <button type="button" class="btn secondary" id="btnLimparConsulta">Limpar dados da consulta</button>
+            <button type="button" class="btn" id="btnSalvar">
+              💾 Salvar criança & registrar consulta
+            </button>
+          </div>
+        </section>
+
+        <!-- REGISTROS / LISTA DE CRIANÇAS -->
+        <section class="card">
+          <h2>
+            Crianças acompanhadas 👶
+            <div class="no-print" style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button type="button" class="btn sm secondary" id="btnExportar">⬇️ Exportar backup</button>
+              <button type="button" class="btn sm secondary" id="btnImportar">⬆️ Importar backup</button>
+              <button type="button" class="btn sm secondary" id="btnImprimirPdf">📄 PDF geral</button>
+            </div>
+          </h2>
+
+          <input type="file" id="inputImportar" accept="application/json" style="display:none;">
+
+          <div class="divider"></div>
+
+          <div class="child-list" id="listaCriancas">
+            <!-- cartões via JS -->
+          </div>
+
+          <div class="divider mt-8"></div>
+
+          <div class="grid-2 mt-8 no-print">
+            <div>
+              <label for="filtroNome">Buscar criança pelo nome (filtro geral)</label>
+              <input type="text" id="filtroNome" placeholder="Digite parte do nome e a lista acima é filtrada...">
+            </div>
+            <div>
+              <label for="filtroRisco">Filtrar por estratificação</label>
+              <select id="filtroRisco">
+                <option value="todos">Todos</option>
+                <option value="habitual">Habitual</option>
+                <option value="intermediario">Intermediário</option>
+                <option value="alto">Alto risco</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="small-text mt-8">
+            Toque em um cartão da lista acima para carregar a criança e lançar nova consulta.  
+            Use o botão 📚 para ver o histórico completo com as curvas de acompanhamento.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <!-- VISUALIZAÇÃO PARA RESUMO / PDF -->
+    <div id="printView" style="display:none; padding:16px;">
+      <div class="no-print" style="margin-bottom:8px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn sm secondary" onclick="voltarAoApp()">⬅️ Voltar</button>
+        <button type="button" class="btn sm" onclick="imprimirAgora()">🖨️ Imprimir / Salvar PDF</button>
+      </div>
+
+      <h2>Relatório geral de puericultura – 0 a 2 anos 👶</h2>
+      <p style="font-size:0.8rem; color:#555; max-width:800px;">
+        Lista de crianças acompanhadas, com estratificação de risco, idade, triagens neonatais,
+        situação vacinal, vulnerabilidades e resumo da última consulta.
+      </p>
+      <table id="printTable" style="width:100%; border-collapse: collapse; font-size:0.75rem;">
+        <thead>
+          <tr>
+            <th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Nome</th>
+            <th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Nascimento / Idade</th>
+            <th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Risco</th>
+            <th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Vacinas</th>
+            <th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Resumo último atendimento</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div> <!-- fim app-container -->
+
+  <!-- MODAL HISTÓRICO -->
+  <div class="modal-overlay" id="modalHistorico">
+    <div class="modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <h3>Histórico de consultas</h3>
+        <button type="button" class="btn sm secondary no-print" id="btnFecharHistorico">Fechar</button>
+      </div>
+      <table class="hist-table" id="histTable">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Idade</th>
+            <th>Peso (kg)</th>
+            <th>Altura (cm)</th>
+            <th>PC (cm)</th>
+            <th>IMC</th>
+            <th>Percentis</th>
+            <th>Risco antropométrico</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SCRIPT ÚNICO (MÓDULO) COM FIREBASE + APP -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAg0HPhWoqbEhjybTYDfBg1AQbCbbIquaE",
+      authDomain: "gerenciador-draschwartz.firebaseapp.com",
+      projectId: "gerenciador-draschwartz",
+      storageBucket: "gerenciador-draschwartz.firebasestorage.app",
+      messagingSenderId: "283430261434",
+      appId: "1:283430261434:web:4c2681d93f99c3c1382883",
+      measurementId: "G-R7TE29MLKB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ===== LOGIN / LOGOUT =====
+    (function() {
+      const loginContainer = document.getElementById('login-container');
+      const appContainer = document.getElementById('app-container');
+      const loginForm = document.getElementById('login-form');
+      const loginError = document.getElementById('login-error');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      function showApp(user) {
+        if (user) {
+          loginContainer.style.display = 'none';
+          appContainer.style.display = 'block';
+        } else {
+          loginContainer.style.display = 'block';
+          appContainer.style.display = 'none';
+        }
+      }
+
+      onAuthStateChanged(auth, user => {
+        showApp(user);
+      });
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginError.style.display = 'none';
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-password').value;
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          loginForm.reset();
+        } catch (err) {
+          console.error(err);
+          loginError.textContent = 'Erro ao entrar. Verifique e-mail e senha.';
+          loginError.style.display = 'block';
+        }
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    })();
+
+    // ====== HELPERS DE DATA / IDADE ======
+    function parseDate(value) {
+      if (!value) return null;
+      const [y, m, d] = value.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function diffInDays(a, b) {
+      const ms = b - a;
+      return Math.floor(ms / (1000 * 60 * 60 * 24));
+    }
+
+    function calcIdades(dataNascStr, igSemanas) {
+      const hoje = new Date();
+      const nasc = parseDate(dataNascStr);
+      if (!nasc) {
+        return {
+          descCrono: '—',
+          descCorrigida: '—',
+          mesesCrono: null,
+          mesesCorrigidos: null
+        };
+      }
+      const diasTotal = diffInDays(nasc, hoje);
+      const mesesCrono = Math.max(0, Math.floor(diasTotal / 30.4375));
+
+      let descCrono;
+      if (mesesCrono < 12) {
+        descCrono = mesesCrono + ' m';
+      } else {
+        const anos = Math.floor(mesesCrono / 12);
+        const meses = mesesCrono % 12;
+        descCrono = anos + ' a ' + meses + ' m';
+      }
+
+      let mesesCorrigidos = null;
+      let descCorrigida = 'Não aplicável';
+
+      if (igSemanas && igSemanas < 37) {
+        const premSem = 40 - igSemanas;
+        const daysPrem = premSem * 7;
+        const daysCorr = Math.max(0, diasTotal - daysPrem);
+        mesesCorrigidos = Math.floor(daysCorr / 30.4375);
+
+        if (mesesCorrigidos < 12) {
+          descCorrigida = mesesCorrigidos + ' m (corrigida)';
+        } else {
+          const anos = Math.floor(mesesCorrigidos / 12);
+          const meses = mesesCorrigidos % 12;
+          descCorrigida = anos + ' a ' + meses + ' m (corrigida)';
+        }
+      }
+
+      return { descCrono, descCorrigida, mesesCrono, mesesCorrigidos };
+    }
+
+    // ====== VACINAS (CALENDÁRIO) ======
+    const VACINA_SCHEDULE = [
+      // Ao nascer
+      { key: 'bcg',           label: 'BCG',                     idadeMinMeses: 0 },
+      { key: 'hepB0',         label: 'Hepatite B RN',           idadeMinMeses: 0 },
+
+      // 2 meses
+      { key: 'penta1',        label: 'Penta 1ª',                idadeMinMeses: 2 },
+      { key: 'vip1',          label: 'VIP 1ª',                  idadeMinMeses: 2 },
+      { key: 'pneumo1',       label: 'Pneumo 10V 1ª',           idadeMinMeses: 2 },
+      { key: 'rota1',         label: 'Rotavírus 1ª',            idadeMinMeses: 2 },
+
+      // 3 meses
+      { key: 'menC1_3m',      label: 'MenC 1ª',                 idadeMinMeses: 3 },
+
+      // 4 meses
+      { key: 'penta2',        label: 'Penta 2ª',                idadeMinMeses: 4 },
+      { key: 'vip2',          label: 'VIP 2ª',                  idadeMinMeses: 4 },
+      { key: 'pneumo2',       label: 'Pneumo 10V 2ª',           idadeMinMeses: 4 },
+      { key: 'rota2',         label: 'Rotavírus 2ª',            idadeMinMeses: 4 },
+
+      // 5 meses
+      { key: 'menC2_5m',      label: 'MenC 2ª',                 idadeMinMeses: 5 },
+
+      // 6 meses
+      { key: 'penta3',        label: 'Penta 3ª',                idadeMinMeses: 6 },
+      { key: 'vip3',          label: 'VIP 3ª',                  idadeMinMeses: 6 },
+      { key: 'influenza6m',   label: 'Influenza (1ª vez)',      idadeMinMeses: 6 },
+      { key: 'covid1_6m',     label: 'Covid-19 1ª',             idadeMinMeses: 6 },
+
+      // 7 meses
+      { key: 'covid2_7m',     label: 'Covid-19 2ª',             idadeMinMeses: 7 },
+
+      // 9 meses
+      { key: 'fa9m',          label: 'Febre amarela',           idadeMinMeses: 9 },
+      { key: 'covid3_9m',     label: 'Covid-19 3ª',             idadeMinMeses: 9 },
+
+      // 12 meses
+      { key: 'pneumoRef',     label: 'Pneumo 10V reforço',      idadeMinMeses: 12 },
+      { key: 'menACWY_12m',   label: 'Men ACWY',                idadeMinMeses: 12 },
+      { key: 'triplice1',     label: 'Tríplice viral 1ª',       idadeMinMeses: 12 },
+
+      // 15 meses
+      { key: 'dtpR1',         label: 'DTP 1º reforço',          idadeMinMeses: 15 },
+      { key: 'vipRef_15m',    label: 'VIP reforço',             idadeMinMeses: 15 },
+      { key: 'tetra_15m',     label: 'Tetraviral (SCRV)',       idadeMinMeses: 15 },
+      { key: 'hepA',          label: 'Hepatite A',              idadeMinMeses: 15 },
+
+      // 4 anos
+      { key: 'dtpR2_4a',      label: 'DTP 2º reforço',          idadeMinMeses: 48 },
+      { key: 'faRef_4a',      label: 'Febre amarela reforço',   idadeMinMeses: 48 },
+      { key: 'varicela_4a',   label: 'Varicela 4 anos',         idadeMinMeses: 48 },
+
+      // Campanha influenza
+      { key: 'influenzaAnual', label: 'Influenza atualizada',   idadeMinMeses: 6 }
+    ];
+
+    function getVacinasMarcadas() {
+      const vacObj = {};
+      document.querySelectorAll('[data-vacina]').forEach(cb => {
+        vacObj[cb.dataset.vacina] = cb.checked ? true : false;
+      });
+      return vacObj;
+    }
+
+    function setVacinasFromObj(vacObj) {
+      document.querySelectorAll('[data-vacina]').forEach(cb => {
+        const key = cb.dataset.vacina;
+        cb.checked = !!(vacObj && vacObj[key]);
+      });
+    }
+
+    function resumoVacinas(vacObj) {
+      if (!vacObj) return 'sem dados';
+      const aplicadas = Object.keys(vacObj).filter(k => vacObj[k]);
+      if (!aplicadas.length) return 'em branco';
+      return aplicadas.length + ' doses registradas';
+    }
+
+    function atualizarStatusVacinas(idadeMeses, vacObj) {
+      const el = document.getElementById('statusVacinas');
+      if (!idadeMeses && idadeMeses !== 0) {
+        el.className = 'badge-ok';
+        el.textContent = 'Vacinas: informe data de nascimento para cálculo da idade.';
+        return;
+      }
+      const pendentes = VACINA_SCHEDULE.filter(v => v.idadeMinMeses <= idadeMeses && !(vacObj && vacObj[v.key]));
+      if (!pendentes.length) {
+        el.className = 'badge-ok';
+        el.textContent = 'Vacinas em dia para a idade.';
+      } else {
+        el.className = 'badge-alert';
+        el.textContent = 'Pendentes para a idade: ' + pendentes.map(v => v.label).join(', ');
+      }
+    }
+
+    // ====== CLASSIFICAÇÃO ANTROPOMÉTRICA (com base em percentis OMS) ======
+    function classificaPercentil(p) {
+      if (p == null || isNaN(p)) return null;
+      if (p < 3) return 'alto';           // <P3
+      if (p < 15) return 'intermediario'; // P3–P15
+      if (p <= 85) return 'habitual';     // P15–P85
+      if (p <= 97) return 'intermediario';// P85–P97
+      return 'alto';                      // >P97
+    }
+
+    function combinarRiscos(riscos) {
+      if (!riscos || !riscos.length) return null;
+      if (riscos.includes('alto')) return 'alto';
+      if (riscos.includes('intermediario')) return 'intermediario';
+      return 'habitual';
+    }
+
+    function calculaRiscoAntropo(pPeso, pAltura, pPc, pImc) {
+      const riscos = [];
+      [pPeso, pAltura, pPc, pImc].forEach(p => {
+        const r = classificaPercentil(p);
+        if (r) riscos.push(r);
+      });
+      return combinarRiscos(riscos);
+    }
+
+    function atualizarPillAntropo() {
+      const pPeso = parseFloat((document.getElementById('pPeso').value || '').replace(',', '.'));
+      const pAltura = parseFloat((document.getElementById('pAltura').value || '').replace(',', '.'));
+      const pPc = parseFloat((document.getElementById('pPc').value || '').replace(',', '.'));
+      const pImc = parseFloat((document.getElementById('pImc').value || '').replace(',', '.'));
+      const risco = calculaRiscoAntropo(
+        isNaN(pPeso) ? null : pPeso,
+        isNaN(pAltura) ? null : pAltura,
+        isNaN(pPc) ? null : pPc,
+        isNaN(pImc) ? null : pImc
+      );
+      const el = document.getElementById('riscoAntropoPill');
+
+      el.className = 'pill small';
+      if (!risco) {
+        el.textContent = 'Preencha ao menos um percentil para classificar.';
+        return;
+      }
+      if (risco === 'habitual') {
+        el.classList.add('habitual');
+        el.textContent = 'Antropometria: dentro da faixa habitual (OMS).';
+      } else if (risco === 'intermediario') {
+        el.classList.add('inter');
+        el.textContent = 'Antropometria: atenção / risco intermediário (OMS).';
+      } else {
+        el.classList.add('alto');
+        el.textContent = 'Antropometria: alto risco (avaliar condutas).';
+      }
+    }
+
+    // ====== ESTADO GLOBAL (LOCALSTORAGE) ======
+    const STORAGE_KEY = 'puericulturaChildren_v1';
+    let children = [];
+    let childAtivoId = null;
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          children = JSON.parse(raw);
+        } else {
+          children = [];
+        }
+      } catch(e) {
+        children = [];
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(children));
+    }
+
+    // ====== RENDERIZAÇÃO DA LISTA ======
+    function renderChildrenList() {
+      const lista = document.getElementById('listaCriancas');
+      const filtroNome = (document.getElementById('filtroNome').value || '').toLowerCase();
+      const filtroRisco = document.getElementById('filtroRisco').value || 'todos';
+
+      lista.innerHTML = '';
+
+      children
+        .slice()
+        .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''))
+        .forEach(child => {
+          if (filtroNome && !(child.nome || '').toLowerCase().includes(filtroNome)) return;
+          if (filtroRisco !== 'todos' && child.riscoGlobal !== filtroRisco) return;
+
+          const card = document.createElement('div');
+          card.className = 'child-card';
+          if (child.riscoGlobal === 'habitual') card.classList.add('risco-habitual');
+          if (child.riscoGlobal === 'intermediario') card.classList.add('risco-intermediario');
+          if (child.riscoGlobal === 'alto') card.classList.add('risco-alto');
+          if (childAtivoId && childAtivoId === child.id) card.classList.add('active');
+
+          const header = document.createElement('div');
+          header.className = 'child-card-header';
+
+          const left = document.createElement('div');
+          const nomeEl = document.createElement('div');
+          nomeEl.className = 'child-name';
+          nomeEl.textContent = child.nome || 'Sem nome';
+          const metaEl = document.createElement('div');
+          metaEl.className = 'child-meta';
+          metaEl.textContent = (child.dataNasc || '') + (child.ubsNome ? ' · ' + child.ubsNome : '');
+          left.appendChild(nomeEl);
+          left.appendChild(metaEl);
+
+          const right = document.createElement('div');
+          right.style.textAlign = 'right';
+          right.style.fontSize = '0.72rem';
+          const riscoTag = document.createElement('div');
+          riscoTag.textContent = 'Risco: ' + (child.riscoGlobal || '—');
+          const vacTag = document.createElement('div');
+          vacTag.textContent = resumoVacinas(child.vacinas);
+          vacTag.className = 'small-text';
+          right.appendChild(riscoTag);
+          right.appendChild(vacTag);
+
+          header.appendChild(left);
+          header.appendChild(right);
+
+          card.appendChild(header);
+
+          card.addEventListener('click', () => {
+            childAtivoId = child.id;
+            carregarCrianca(child.id);
+            renderChildrenList();
+          });
+
+          lista.appendChild(card);
+        });
+    }
+
+    // ====== FORMULÁRIO: CARREGAR / LIMPAR ======
+    function limparFormulario(keepUbs) {
+      const ubs = document.getElementById('ubsNome').value;
+      document.querySelectorAll('input, textarea, select').forEach(el => {
+        if (el.id === 'ubsNome' && keepUbs) return;
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+      setVacinasFromObj({});
+      document.getElementById('childId').value = '';
+      childAtivoId = null;
+      document.getElementById('idadeBox').innerHTML =
+        '<strong>Idade na data da consulta:</strong><div>Cronológica: —</div><div>Idade corrigida (se prematuro): —</div>';
+      document.getElementById('riscoAntropoPill').className = 'pill small';
+      document.getElementById('riscoAntropoPill').textContent = 'Preencha os percentis para classificar.';
+      document.getElementById('statusVacinas').className = 'badge-ok';
+      document.getElementById('statusVacinas').textContent =
+        'Vacinas: informe data de nascimento para cálculo da idade.';
+      if (keepUbs) document.getElementById('ubsNome').value = ubs;
+    }
+
+    function preencherIdadeBox() {
+      const dataNasc = document.getElementById('dataNasc').value;
+      const ig = parseInt(document.getElementById('igSemanas').value || '');
+      const idade = calcIdades(dataNasc, isNaN(ig) ? null : ig);
+      const box = document.getElementById('idadeBox');
+      box.innerHTML = '<strong>Idade na data da consulta:</strong>' +
+        '<div>Cronológica: ' + idade.descCrono + '</div>' +
+        '<div>Idade corrigida (se prematuro): ' + idade.descCorrigida + '</div>';
+      return idade;
+    }
+
+    function carregarCrianca(id) {
+      const child = children.find(c => c.id === id);
+      if (!child) return;
+
+      document.getElementById('childId').value = child.id || '';
+      document.getElementById('ubsNome').value = child.ubsNome || '';
+      document.getElementById('nome').value = child.nome || '';
+      document.getElementById('nomeMae').value = child.nomeMae || '';
+      document.getElementById('viaParto').value = child.viaParto || '';
+      document.getElementById('dataNasc').value = child.dataNasc || '';
+      document.getElementById('igSemanas').value = child.igSemanas || '';
+      document.getElementById('pesoNascimento').value = child.pesoNascimento || '';
+      document.getElementById('doencasMaternas').value = child.doencasMaternas || '';
+      document.getElementById('infectoObs').value = child.infectoObs || '';
+      document.getElementById('triagemPezinho').value = child.triagens?.pezinho || '';
+      document.getElementById('triagemOlhinho').value = child.triagens?.olhinho || '';
+      document.getElementById('triagemOrelhinha').value = child.triagens?.orelhinha || '';
+      document.getElementById('triagemCoracao').value = child.triagens?.coracao || '';
+      document.getElementById('triagemLinguinha').value = child.triagens?.linguinha || '';
+      document.getElementById('riscoGlobal').value = child.riscoGlobal || 'habitual';
+      document.getElementById('flagAcomp').checked = !!child.flagAcomp;
+      document.getElementById('flagAcompObs').value = child.flagAcompObs || '';
+
+      setVacinasFromObj(child.vacinas || {});
+
+      // últimos dados de consulta
+      const ultima = (child.consultas && child.consultas.length)
+        ? child.consultas[child.consultas.length - 1]
+        : null;
+
+      if (ultima) {
+        document.getElementById('dataConsulta').value = ultima.dataConsulta || '';
+        document.getElementById('peso').value = ultima.peso || '';
+        document.getElementById('altura').value = ultima.altura || '';
+        document.getElementById('pc').value = ultima.pc || '';
+        document.getElementById('imc').value = ultima.imc || '';
+        document.getElementById('obsAntropo').value = ultima.obsAntropo || '';
+        document.getElementById('pPeso').value = ultima.pPeso || '';
+        document.getElementById('pAltura').value = ultima.pAltura || '';
+        document.getElementById('pPc').value = ultima.pPc || '';
+        document.getElementById('pImc').value = ultima.pImc || '';
+        document.getElementById('desenvolvimento').value = ultima.desenvolvimento || '';
+        document.getElementById('orientacoes').value = ultima.orientacoes || '';
+        document.getElementById('planoRetornoSug').value = ultima.planoRetornoSug || '';
+        document.getElementById('planoRetornoLivre').value = ultima.planoRetornoLivre || '';
+      } else {
+        document.getElementById('dataConsulta').value = '';
+        document.getElementById('peso').value = '';
+        document.getElementById('altura').value = '';
+        document.getElementById('pc').value = '';
+        document.getElementById('imc').value = '';
+        document.getElementById('obsAntropo').value = '';
+        document.getElementById('pPeso').value = '';
+        document.getElementById('pAltura').value = '';
+        document.getElementById('pPc').value = '';
+        document.getElementById('pImc').value = '';
+        document.getElementById('desenvolvimento').value = '';
+        document.getElementById('orientacoes').value = '';
+        document.getElementById('planoRetornoSug').value = '';
+        document.getElementById('planoRetornoLivre').value = '';
+      }
+
+      preencherIdadeBox();
+      atualizarPillAntropo();
+      const idade = calcIdades(child.dataNasc, child.igSemanas || null);
+      atualizarStatusVacinas(idade.mesesCrono, child.vacinas || {});
+    }
+
+    // ====== SALVAR CRIANÇA & CONSULTA ======
+    function salvarCriancaEConsulta() {
+      const idHidden = document.getElementById('childId').value;
+      const nome = document.getElementById('nome').value.trim();
+      if (!nome) {
+        alert('Informe ao menos o nome da criança.');
+        return;
+      }
+
+      const ubsNome = document.getElementById('ubsNome').value.trim();
+      const nomeMae = document.getElementById('nomeMae').value.trim();
+      const viaParto = document.getElementById('viaParto').value;
+      const dataNasc = document.getElementById('dataNasc').value;
+      const igSemanas = document.getElementById('igSemanas').value;
+      const pesoNascimento = document.getElementById('pesoNascimento').value;
+      const doencasMaternas = document.getElementById('doencasMaternas').value.trim();
+      const infectoObs = document.getElementById('infectoObs').value.trim();
+      const riscoGlobal = document.getElementById('riscoGlobal').value;
+      const flagAcomp = document.getElementById('flagAcomp').checked;
+      const flagAcompObs = document.getElementById('flagAcompObs').value.trim();
+
+      const triagens = {
+        pezinho: document.getElementById('triagemPezinho').value,
+        olhinho: document.getElementById('triagemOlhinho').value,
+        orelhinha: document.getElementById('triagemOrelhinha').value,
+        coracao: document.getElementById('triagemCoracao').value,
+        linguinha: document.getElementById('triagemLinguinha').value
+      };
+
+      const dataConsulta = document.getElementById('dataConsulta').value ||
+        new Date().toISOString().slice(0,10);
+      const peso = document.getElementById('peso').value;
+      const altura = document.getElementById('altura').value;
+      const pc = document.getElementById('pc').value;
+      const imc = document.getElementById('imc').value;
+      const obsAntropo = document.getElementById('obsAntropo').value.trim();
+      const pPeso = document.getElementById('pPeso').value;
+      const pAltura = document.getElementById('pAltura').value;
+      const pPc = document.getElementById('pPc').value;
+      const pImc = document.getElementById('pImc').value;
+      const desenvolvimento = document.getElementById('desenvolvimento').value.trim();
+      const orientacoes = document.getElementById('orientacoes').value.trim();
+      const planoRetornoSug = document.getElementById('planoRetornoSug').value;
+      const planoRetornoLivre = document.getElementById('planoRetornoLivre').value.trim();
+
+      const vacinas = getVacinasMarcadas();
+
+      let child;
+      if (idHidden) {
+        child = children.find(c => c.id === idHidden);
+        if (!child) {
+          child = { id: idHidden };
+          children.push(child);
+        }
+      } else {
+        child = {
+          id: 'c_' + Date.now() + '_' + Math.random().toString(16).slice(2),
+          consultas: []
+        };
+        children.push(child);
+        document.getElementById('childId').value = child.id;
+      }
+
+      child.nome = nome;
+      child.ubsNome = ubsNome;
+      child.nomeMae = nomeMae;
+      child.viaParto = viaParto;
+      child.dataNasc = dataNasc;
+      child.igSemanas = igSemanas;
+      child.pesoNascimento = pesoNascimento;
+      child.doencasMaternas = doencasMaternas;
+      child.infectoObs = infectoObs;
+      child.riscoGlobal = riscoGlobal;
+      child.flagAcomp = flagAcomp;
+      child.flagAcompObs = flagAcompObs;
+      child.triagens = triagens;
+      child.vacinas = vacinas;
+
+      if (!Array.isArray(child.consultas)) {
+        child.consultas = [];
+      }
+
+      const consulta = {
+        dataConsulta,
+        peso,
+        altura,
+        pc,
+        imc,
+        obsAntropo,
+        pPeso,
+        pAltura,
+        pPc,
+        pImc,
+        desenvolvimento,
+        orientacoes,
+        planoRetornoSug,
+        planoRetornoLivre
+      };
+      child.consultas.push(consulta);
+
+      saveToStorage();
+      childAtivoId = child.id;
+      renderChildrenList();
+      alert('Criança e consulta salvas com sucesso.');
+    }
+
+    // ====== BACKUP / IMPORT / PRINT ======
+    function exportarBackup() {
+      const dataStr = JSON.stringify(children, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'puericultura_backup.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function importarBackup(arquivo) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const dados = JSON.parse(e.target.result);
+          if (!Array.isArray(dados)) throw new Error('Formato inválido');
+          children = dados;
+          saveToStorage();
+          renderChildrenList();
+          alert('Backup importado com sucesso.');
+        } catch (err) {
+          alert('Erro ao importar backup: ' + err.message);
+        }
+      };
+      reader.readAsText(arquivo);
+    }
+
+    function montarTabelaPrint() {
+      const tbody = document.querySelector('#printTable tbody');
+      tbody.innerHTML = '';
+      children.forEach(child => {
+        const tr = document.createElement('tr');
+
+        const tdNome = document.createElement('td');
+        tdNome.textContent = child.nome || '';
+        tdNome.style.borderBottom = '1px solid #eee';
+        tdNome.style.padding = '4px';
+
+        const tdNasc = document.createElement('td');
+        tdNasc.textContent = (child.dataNasc || '');
+        tdNasc.style.borderBottom = '1px solid #eee';
+        tdNasc.style.padding = '4px';
+
+        const tdRisco = document.createElement('td');
+        tdRisco.textContent = child.riscoGlobal || '';
+        tdRisco.style.borderBottom = '1px solid #eee';
+        tdRisco.style.padding = '4px';
+
+        const tdVac = document.createElement('td');
+        tdVac.textContent = resumoVacinas(child.vacinas);
+        tdVac.style.borderBottom = '1px solid #eee';
+        tdVac.style.padding = '4px';
+
+        const tdResumo = document.createElement('td');
+        const ultima = (child.consultas && child.consultas.length)
+          ? child.consultas[child.consultas.length - 1]
+          : null;
+        tdResumo.textContent = ultima
+          ? ('Peso: ' + (ultima.peso || '—') + ' kg; Altura: ' +
+             (ultima.altura || '—') + ' cm; Observação: ' + (ultima.obsAntropo || ''))
+          : 'Sem consulta registrada';
+        tdResumo.style.borderBottom = '1px solid #eee';
+        tdResumo.style.padding = '4px';
+
+        tr.appendChild(tdNome);
+        tr.appendChild(tdNasc);
+        tr.appendChild(tdRisco);
+        tr.appendChild(tdVac);
+        tr.appendChild(tdResumo);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function abrirPrintView() {
+      montarTabelaPrint();
+      document.getElementById('appView').style.display = 'none';
+      document.getElementById('printView').style.display = 'block';
+    }
+
+    function voltarAoApp() {
+      document.getElementById('printView').style.display = 'none';
+      document.getElementById('appView').style.display = 'block';
+    }
+
+    function imprimirAgora() {
+      window.print();
+    }
+
+    window.voltarAoApp = voltarAoApp;
+    window.imprimirAgora = imprimirAgora;
+
+    // ====== HISTÓRICO (MODAL) ======
+    function abrirHistorico() {
+      const id = document.getElementById('childId').value;
+      const child = children.find(c => c.id === id);
+      if (!child || !child.consultas || !child.consultas.length) {
+        alert('Nenhuma consulta registrada para esta criança.');
+        return;
+      }
+      const tbody = document.querySelector('#histTable tbody');
+      tbody.innerHTML = '';
+      child.consultas.forEach(cons => {
+        const tr = document.createElement('tr');
+        function td(txt) {
+          const t = document.createElement('td');
+          t.textContent = txt;
+          return t;
+        }
+        tr.appendChild(td(cons.dataConsulta || ''));
+        tr.appendChild(td('')); // idade específica na data – poderia recalcular se desejar
+        tr.appendChild(td(cons.peso || ''));
+        tr.appendChild(td(cons.altura || ''));
+        tr.appendChild(td(cons.pc || ''));
+        tr.appendChild(td(cons.imc || ''));
+        tr.appendChild(td('P: ' + (cons.pPeso || '-') + ' / E: ' + (cons.pAltura || '-') + ' / PC: ' + (cons.pPc || '-') + ' / IMC: ' + (cons.pImc || '-')));
+        tr.appendChild(td(calculaRiscoAntropo(
+          parseFloat(cons.pPeso || 'NaN'),
+          parseFloat(cons.pAltura || 'NaN'),
+          parseFloat(cons.pPc || 'NaN'),
+          parseFloat(cons.pImc || 'NaN')
+        ) || ''));
+        tbody.appendChild(tr);
+      });
+      document.getElementById('modalHistorico').style.display = 'flex';
+    }
+
+    function fecharHistorico() {
+      document.getElementById('modalHistorico').style.display = 'none';
+    }
+
+    // ====== EVENTOS GERAIS ======
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFromStorage();
+      renderChildrenList();
+
+      document.getElementById('btnSalvar').addEventListener('click', salvarCriancaEConsulta);
+      document.getElementById('btnNovaCrianca').addEventListener('click', () => {
+        limparFormulario(false);
+        renderChildrenList();
+      });
+      document.getElementById('btnLimparConsulta').addEventListener('click', () => {
+        const keepUbs = !!document.getElementById('ubsNome').value;
+        limparFormulario(keepUbs);
+      });
+
+      document.getElementById('filtroNome').addEventListener('input', renderChildrenList);
+      document.getElementById('filtroRisco').addEventListener('change', renderChildrenList);
+
+      document.getElementById('btnExportar').addEventListener('click', exportarBackup);
+      document.getElementById('btnImportar').addEventListener('click', () => {
+        document.getElementById('inputImportar').click();
+      });
+      document.getElementById('inputImportar').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) importarBackup(file);
+        e.target.value = '';
+      });
+
+      document.getElementById('btnImprimirPdf').addEventListener('click', abrirPrintView);
+
+      // Antropometria: IMC + risco
+      function atualizarImc() {
+        const peso = parseFloat((document.getElementById('peso').value || '').replace(',', '.'));
+        const altura = parseFloat((document.getElementById('altura').value || '').replace(',', '.'));
+        const imcEl = document.getElementById('imc');
+        if (!isNaN(peso) && !isNaN(altura) && altura > 0) {
+          const imc = peso / Math.pow(altura / 100, 2);
+          imcEl.value = imc.toFixed(2);
+        } else {
+          imcEl.value = '';
+        }
+      }
+      ['peso','altura'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          atualizarImc();
+        });
+      });
+
+      ['pPeso','pAltura','pPc','pImc'].forEach(id => {
+        document.getElementById(id).addEventListener('input', atualizarPillAntropo);
+      });
+
+      ['dataNasc','igSemanas'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('change', () => {
+          const idade = preencherIdadeBox();
+          const vacObj = getVacinasMarcadas();
+          atualizarStatusVacinas(idade.mesesCrono, vacObj);
+        });
+      });
+
+      document.querySelectorAll('[data-vacina]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const dataNasc = document.getElementById('dataNasc').value;
+          const ig = parseInt(document.getElementById('igSemanas').value || '');
+          const idade = calcIdades(dataNasc, isNaN(ig) ? null : ig);
+          atualizarStatusVacinas(idade.mesesCrono, getVacinasMarcadas());
+        });
+      });
+
+      document.getElementById('btnFecharHistorico').addEventListener('click', fecharHistorico);
+      document.getElementById('modalHistorico').addEventListener('click', (e) => {
+        if (e.target.id === 'modalHistorico') fecharHistorico();
+      });
+    });
+  </script>
+</body>
+</html>
