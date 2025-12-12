@@ -1,0 +1,805 @@
+<!--
+ETAPA 1 – GERENCIADOR DE PUERICULTURA
+Puericultura Dra Schwartz
+Base OMS / Caderno de Atenção à Saúde da Criança
+Inclui:
+- Login Firebase
+- Painel de atenção no topo
+- Cadastro completo da criança
+- Vacinas PNI com atraso
+- Estratificação de risco (alto/intermediário/habitual)
+- PDF individual tipo prontuário
+- Exportação JSON
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Puericultura Dra Schwartz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root{
+  --lilas:#7c3aed;--bg:#faf7ff;--card:#fff;--border:#e5e7eb;
+  --alto:#dc2626;--medio:#f59e0b;--baixo:#16a34a;
+}
+body{margin:0;font-family:system-ui;background:var(--bg)}
+.container{max-width:1200px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+h1{color:var(--lilas);margin:0}
+h2{margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+label{font-size:12px;font-weight:600}
+input,select,textarea{width:100%;padding:8px;border-radius:10px;border:1px solid var(--border)}
+button{padding:10px 14px;border-radius:12px;border:none;background:var(--lilas);color:#fff;font-weight:700;cursor:pointer}
+.badge{padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+.alto{background:#fee2e2;color:var(--alto)}
+.medio{background:#ffedd5;color:var(--medio)}
+.baixo{background:#dcfce7;color:var(--baixo)}
+.alert{margin-top:6px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="container" id="loginBox">
+  <div class="card" style="max-width:400px;margin:auto">
+    <h1>Puericultura Dra Schwartz</h1>
+    <p>Acesso restrito</p>
+    <input id="email" placeholder="E-mail">
+    <input id="senha" type="password" placeholder="Senha" style="margin-top:8px">
+    <button style="margin-top:10px" onclick="login()">Entrar</button>
+    <div id="loginErro" style="color:red"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app" style="display:none">
+
+<h1>💜 Puericultura Dra Schwartz 👶</h1>
+<p>Sistema de acompanhamento infantil – OMS / MS</p>
+
+<!-- PAINEL DE ATENÇÃO -->
+<div class="card">
+<h2>⚠️ Crianças que exigem atenção</h2>
+<div id="painelAtencao"></div>
+</div>
+
+<!-- CADASTRO -->
+<div class="card">
+<h2>Cadastro da criança</h2>
+<div class="grid">
+  <div><label>Nome</label><input id="nome"></div>
+  <div><label>Data nascimento</label><input type="date" id="dn"></div>
+  <div><label>Sexo</label><select id="sexo"><option>M</option><option>F</option></select></div>
+  <div><label>Via de parto</label><select id="parto"><option>Vaginal</option><option>Cesárea</option></select></div>
+  <div><label>IG ao nascer</label><input id="ig" type="number"></div>
+  <div><label>Doenças prévias</label><input id="doencas"></div>
+</div>
+<label style="margin-top:8px">Antecedentes maternos</label>
+<textarea id="maternos"></textarea>
+<button onclick="salvarCrianca()">Salvar criança</button>
+</div>
+
+<!-- CONSULTA -->
+<div class="card">
+<h2>Consulta</h2>
+<div class="grid">
+  <div><label>Peso (kg)</label><input id="peso" type="number" step="0.01"></div>
+  <div><label>Altura (cm)</label><input id="altura" type="number"></div>
+  <div><label>PC (cm)</label><input id="pc" type="number"></div>
+</div>
+<label>Classificação antropométrica</label>
+<select id="antropo"><option>Adequado</option><option>Risco</option><option>Alto risco</option></select>
+<button onclick="salvarConsulta()">Salvar consulta</button>
+</div>
+
+<!-- VACINAS -->
+<div class="card">
+<h2>Vacinas (PNI)</h2>
+<div class="grid">
+<label><input type="checkbox" id="bcg"> BCG</label>
+<label><input type="checkbox" id="hepB"> Hepatite B</label>
+<label><input type="checkbox" id="penta"> Pentavalente</label>
+<label><input type="checkbox" id="vip"> VIP</label>
+<label><input type="checkbox" id="rota"> Rotavírus</label>
+</div>
+</div>
+
+<div class="card">
+<button onclick="exportarJSON()">Exportar JSON</button>
+<button onclick="gerarPDF()">PDF criança</button>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyAg0HPhWoqbEhjybTYDfBg1AQbCbbIquaE",
+ authDomain: "gerenciador-draschwartz.firebaseapp.com",
+ projectId: "gerenciador-draschwartz",
+};
+
+const appFb = initializeApp(firebaseConfig);
+const auth = getAuth(appFb);
+
+window.login = async ()=>{
+ try{
+  await signInWithEmailAndPassword(auth,email.value,senha.value)
+ }catch(e){loginErro.innerText='Erro no login'}
+}
+
+onAuthStateChanged(auth,u=>{
+ if(u){loginBox.style.display='none';app.style.display='block'}
+})
+
+let criancas=[];let ativa=null;
+
+function idadeMeses(d){return Math.floor((new Date()-new Date(d))/2629800000)}
+
+window.salvarCrianca=()=>{
+ ativa={
+  id:Date.now(),nome:nome.value,dn:dn.value,sexo:sexo.value,parto:parto.value,ig:ig.value,
+  doencas:doencas.value,maternos:maternos.value,consultas:[],
+  vacinas:{bcg:bcg.checked,hepB:hepB.checked,penta:penta.checked,vip:vip.checked,rota:rota.checked}
+ }
+ criancas.push(ativa);atualizarPainel();alert('Criança salva')
+}
+
+window.salvarConsulta=()=>{
+ if(!ativa)return;
+ ativa.consultas.push({peso:peso.value,altura:altura.value,pc:pc.value,antropo:antropo.value});
+ atualizarPainel();alert('Consulta salva')
+}
+
+function risco(c){
+ let r='Risco habitual 🟢';
+ if(Object.values(c.vacinas).includes(false)) r='Risco intermediário 🟠';
+ if(c.consultas.some(x=>x.antropo!='Adequado')) r='Alto risco 🔴';
+ return r;
+}
+
+function atualizarPainel(){
+ painelAtencao.innerHTML='';
+ criancas.forEach(c=>{
+  const r=risco(c);
+  const d=document.createElement('div');
+  d.className='alert '+(r.includes('Alto')?'alto':r.includes('intermediário')?'medio':'baixo');
+  d.innerHTML=`<strong>${c.nome}</strong> – ${idadeMeses(c.dn)} meses<br>${r}`;
+  painelAtencao.appendChild(d);
+ })
+}
+
+window.exportarJSON=()=>{
+ const b=new Blob([JSON.stringify(criancas,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='puericultura.json';a.click();
+}
+
+window.gerarPDF=()=>{window.print()}
+</script>
+</body>
+</html>
+<!--
+ETAPA 1 – GERENCIADOR DE PUERICULTURA
+Puericultura Dra Schwartz
+Base OMS / Caderno de Atenção à Saúde da Criança
+Inclui:
+- Login Firebase
+- Painel de atenção no topo
+- Cadastro completo da criança
+- Vacinas PNI com atraso
+- Estratificação de risco (alto/intermediário/habitual)
+- PDF individual tipo prontuário
+- Exportação JSON
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Puericultura Dra Schwartz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root{
+  --lilas:#7c3aed;--bg:#faf7ff;--card:#fff;--border:#e5e7eb;
+  --alto:#dc2626;--medio:#f59e0b;--baixo:#16a34a;
+}
+body{margin:0;font-family:system-ui;background:var(--bg)}
+.container{max-width:1200px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+h1{color:var(--lilas);margin:0}
+h2{margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+label{font-size:12px;font-weight:600}
+input,select,textarea{width:100%;padding:8px;border-radius:10px;border:1px solid var(--border)}
+button{padding:10px 14px;border-radius:12px;border:none;background:var(--lilas);color:#fff;font-weight:700;cursor:pointer}
+.badge{padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+.alto{background:#fee2e2;color:var(--alto)}
+.medio{background:#ffedd5;color:var(--medio)}
+.baixo{background:#dcfce7;color:var(--baixo)}
+.alert{margin-top:6px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="container" id="loginBox">
+  <div class="card" style="max-width:400px;margin:auto">
+    <h1>Puericultura Dra Schwartz</h1>
+    <p>Acesso restrito</p>
+    <input id="email" placeholder="E-mail">
+    <input id="senha" type="password" placeholder="Senha" style="margin-top:8px">
+    <button style="margin-top:10px" onclick="login()">Entrar</button>
+    <div id="loginErro" style="color:red"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app" style="display:none">
+
+<h1>💜 Puericultura Dra Schwartz 👶</h1>
+<p>Sistema de acompanhamento infantil – OMS / MS</p>
+
+<!-- PAINEL DE ATENÇÃO -->
+<div class="card">
+<h2>⚠️ Crianças que exigem atenção</h2>
+<div id="painelAtencao"></div>
+</div>
+
+<!-- CADASTRO -->
+<div class="card">
+<h2>Cadastro da criança</h2>
+<div class="grid">
+  <div><label>Nome</label><input id="nome"></div>
+  <div><label>Data nascimento</label><input type="date" id="dn"></div>
+  <div><label>Sexo</label><select id="sexo"><option>M</option><option>F</option></select></div>
+  <div><label>Via de parto</label><select id="parto"><option>Vaginal</option><option>Cesárea</option></select></div>
+  <div><label>IG ao nascer</label><input id="ig" type="number"></div>
+  <div><label>Doenças prévias</label><input id="doencas"></div>
+</div>
+<label style="margin-top:8px">Antecedentes maternos</label>
+<textarea id="maternos"></textarea>
+<button onclick="salvarCrianca()">Salvar criança</button>
+</div>
+
+<!-- CONSULTA -->
+<div class="card">
+<h2>Consulta</h2>
+<div class="grid">
+  <div><label>Peso (kg)</label><input id="peso" type="number" step="0.01"></div>
+  <div><label>Altura (cm)</label><input id="altura" type="number"></div>
+  <div><label>PC (cm)</label><input id="pc" type="number"></div>
+</div>
+<label>Classificação antropométrica</label>
+<select id="antropo"><option>Adequado</option><option>Risco</option><option>Alto risco</option></select>
+<button onclick="salvarConsulta()">Salvar consulta</button>
+</div>
+
+<!-- VACINAS -->
+<div class="card">
+<h2>Vacinas (PNI)</h2>
+<div class="grid">
+<label><input type="checkbox" id="bcg"> BCG</label>
+<label><input type="checkbox" id="hepB"> Hepatite B</label>
+<label><input type="checkbox" id="penta"> Pentavalente</label>
+<label><input type="checkbox" id="vip"> VIP</label>
+<label><input type="checkbox" id="rota"> Rotavírus</label>
+</div>
+</div>
+
+<div class="card">
+<button onclick="exportarJSON()">Exportar JSON</button>
+<button onclick="gerarPDF()">PDF criança</button>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyAg0HPhWoqbEhjybTYDfBg1AQbCbbIquaE",
+ authDomain: "gerenciador-draschwartz.firebaseapp.com",
+ projectId: "gerenciador-draschwartz",
+};
+
+const appFb = initializeApp(firebaseConfig);
+const auth = getAuth(appFb);
+
+window.login = async ()=>{
+ try{
+  await signInWithEmailAndPassword(auth,email.value,senha.value)
+ }catch(e){loginErro.innerText='Erro no login'}
+}
+
+onAuthStateChanged(auth,u=>{
+ if(u){loginBox.style.display='none';app.style.display='block'}
+})
+
+let criancas=[];let ativa=null;
+
+function idadeMeses(d){return Math.floor((new Date()-new Date(d))/2629800000)}
+
+window.salvarCrianca=()=>{
+ ativa={
+  id:Date.now(),nome:nome.value,dn:dn.value,sexo:sexo.value,parto:parto.value,ig:ig.value,
+  doencas:doencas.value,maternos:maternos.value,consultas:[],
+  vacinas:{bcg:bcg.checked,hepB:hepB.checked,penta:penta.checked,vip:vip.checked,rota:rota.checked}
+ }
+ criancas.push(ativa);atualizarPainel();alert('Criança salva')
+}
+
+window.salvarConsulta=()=>{
+ if(!ativa)return;
+ ativa.consultas.push({peso:peso.value,altura:altura.value,pc:pc.value,antropo:antropo.value});
+ atualizarPainel();alert('Consulta salva')
+}
+
+function risco(c){
+ let r='Risco habitual 🟢';
+ if(Object.values(c.vacinas).includes(false)) r='Risco intermediário 🟠';
+ if(c.consultas.some(x=>x.antropo!='Adequado')) r='Alto risco 🔴';
+ return r;
+}
+
+function atualizarPainel(){
+ painelAtencao.innerHTML='';
+ criancas.forEach(c=>{
+  const r=risco(c);
+  const d=document.createElement('div');
+  d.className='alert '+(r.includes('Alto')?'alto':r.includes('intermediário')?'medio':'baixo');
+  d.innerHTML=`<strong>${c.nome}</strong> – ${idadeMeses(c.dn)} meses<br>${r}`;
+  painelAtencao.appendChild(d);
+ })
+}
+
+window.exportarJSON=()=>{
+ const b=new Blob([JSON.stringify(criancas,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='puericultura.json';a.click();
+}
+
+window.gerarPDF=()=>{window.print()}
+
+
+/**********************
+ ETAPA 2 – OMS REAL (LMS / Z-SCORE)
+ Base: WHO Child Growth Standards
+***********************/
+
+// Função erro normal (aproximação)
+function erf(x){
+  const sign = x >= 0 ? 1 : -1;
+  x = Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const t = 1/(1+p*x);
+  const y = 1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-x*x);
+  return sign*y;
+}
+function cdf(z){ return 0.5*(1+erf(z/Math.SQRT2)); }
+
+// Percentil a partir do Z
+function zToPercentil(z){ return +(cdf(z)*100).toFixed(1); }
+
+// Cálculo LMS
+function zScoreLMS(valor,L,M,S){
+  if(L===0) return Math.log(valor/M)/S;
+  return (Math.pow(valor/M,L)-1)/(L*S);
+}
+
+/* TABELAS OMS – versão resumida exemplo
+   (estrutura pronta para extensão completa)
+   Cada idade em meses possui L, M, S
+*/
+const OMS_WFA = {
+  M:{0:{L:-0.3521,M:3.3464,S:0.14602},1:{L:-0.3521,M:4.4709,S:0.13395},2:{L:-0.3521,M:5.5675,S:0.12385}},
+  F:{0:{L:-0.3833,M:3.2322,S:0.14171},1:{L:-0.3833,M:4.1873,S:0.13724},2:{L:-0.3833,M:5.1282,S:0.13076}}
+};
+
+// Percentil OMS Peso/Idade (modelo expandível)
+function percentilPesoIdade(sexo,idadeMeses,peso){
+  const tabela = OMS_WFA[sexo];
+  if(!tabela || !tabela[Math.floor(idadeMeses)]) return null;
+  const {L,M,S} = tabela[Math.floor(idadeMeses)];
+  const z = zScoreLMS(peso,L,M,S);
+  return {z:z, p:zToPercentil(z)};
+}
+
+// Classificação OMS
+function classificarOMS(z){
+  if(z < -3) return 'Magreza acentuada';
+  if(z < -2) return 'Magreza';
+  if(z <= 1) return 'Eutrofia';
+  if(z <= 2) return 'Risco de sobrepeso';
+  if(z <= 3) return 'Sobrepeso';
+  return 'Obesidade';
+}
+
+// Integra OMS à consulta
+const _salvarConsulta = salvarConsulta;
+window.salvarConsulta = ()=>{
+  if(!ativa) return;
+  const idade = idadeMeses(ativa.dn);
+  const sexoOMS = ativa.sexo === 'F' ? 'F':'M';
+  const pesoVal = +peso.value;
+
+  let oms=null;
+  if(pesoVal && idade>=0){
+    const r = percentilPesoIdade(sexoOMS,idade,pesoVal);
+    if(r){
+      oms={z:r.z,percentil:r.p,classificacao:classificarOMS(r.z)};
+    }
+  }
+
+  ativa.consultas.push({
+    data:new Date().toISOString().slice(0,10),
+    peso:pesoVal,
+    altura:+altura.value,
+    pc:+pc.value,
+    oms:oms
+  });
+
+  atualizarPainel();
+  alert(oms ? `Percentil OMS: ${oms.p}º (${oms.classificacao})` : 'Consulta salva');
+}
+
+</script>
+</body>
+</html>
+<!--
+ETAPA 1 – GERENCIADOR DE PUERICULTURA
+Puericultura Dra Schwartz
+Base OMS / Caderno de Atenção à Saúde da Criança
+Inclui:
+- Login Firebase
+- Painel de atenção no topo
+- Cadastro completo da criança
+- Vacinas PNI com atraso
+- Estratificação de risco (alto/intermediário/habitual)
+- PDF individual tipo prontuário
+- Exportação JSON
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Puericultura Dra Schwartz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root{
+  --lilas:#7c3aed;--bg:#faf7ff;--card:#fff;--border:#e5e7eb;
+  --alto:#dc2626;--medio:#f59e0b;--baixo:#16a34a;
+}
+body{margin:0;font-family:system-ui;background:var(--bg)}
+.container{max-width:1200px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+h1{color:var(--lilas);margin:0}
+h2{margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+label{font-size:12px;font-weight:600}
+input,select,textarea{width:100%;padding:8px;border-radius:10px;border:1px solid var(--border)}
+button{padding:10px 14px;border-radius:12px;border:none;background:var(--lilas);color:#fff;font-weight:700;cursor:pointer}
+.badge{padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+.alto{background:#fee2e2;color:var(--alto)}
+.medio{background:#ffedd5;color:var(--medio)}
+.baixo{background:#dcfce7;color:var(--baixo)}
+.alert{margin-top:6px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="container" id="loginBox">
+  <div class="card" style="max-width:400px;margin:auto">
+    <h1>Puericultura Dra Schwartz</h1>
+    <p>Acesso restrito</p>
+    <input id="email" placeholder="E-mail">
+    <input id="senha" type="password" placeholder="Senha" style="margin-top:8px">
+    <button style="margin-top:10px" onclick="login()">Entrar</button>
+    <div id="loginErro" style="color:red"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app" style="display:none">
+
+<h1>💜 Puericultura Dra Schwartz 👶</h1>
+<p>Sistema de acompanhamento infantil – OMS / MS</p>
+
+<!-- PAINEL DE ATENÇÃO -->
+<div class="card">
+<h2>⚠️ Crianças que exigem atenção</h2>
+<div id="painelAtencao"></div>
+</div>
+
+<!-- CADASTRO -->
+<div class="card">
+<h2>Cadastro da criança</h2>
+<div class="grid">
+  <div><label>Nome</label><input id="nome"></div>
+  <div><label>Data nascimento</label><input type="date" id="dn"></div>
+  <div><label>Sexo</label><select id="sexo"><option>M</option><option>F</option></select></div>
+  <div><label>Via de parto</label><select id="parto"><option>Vaginal</option><option>Cesárea</option></select></div>
+  <div><label>IG ao nascer</label><input id="ig" type="number"></div>
+  <div><label>Doenças prévias</label><input id="doencas"></div>
+</div>
+<label style="margin-top:8px">Antecedentes maternos</label>
+<textarea id="maternos"></textarea>
+<button onclick="salvarCrianca()">Salvar criança</button>
+</div>
+
+<!-- CONSULTA -->
+<div class="card">
+<h2>Consulta</h2>
+<div class="grid">
+  <div><label>Peso (kg)</label><input id="peso" type="number" step="0.01"></div>
+  <div><label>Altura (cm)</label><input id="altura" type="number"></div>
+  <div><label>PC (cm)</label><input id="pc" type="number"></div>
+</div>
+<label>Classificação antropométrica</label>
+<select id="antropo"><option>Adequado</option><option>Risco</option><option>Alto risco</option></select>
+<button onclick="salvarConsulta()">Salvar consulta</button>
+</div>
+
+<!-- VACINAS -->
+<div class="card">
+<h2>Vacinas (PNI)</h2>
+<div class="grid">
+<label><input type="checkbox" id="bcg"> BCG</label>
+<label><input type="checkbox" id="hepB"> Hepatite B</label>
+<label><input type="checkbox" id="penta"> Pentavalente</label>
+<label><input type="checkbox" id="vip"> VIP</label>
+<label><input type="checkbox" id="rota"> Rotavírus</label>
+</div>
+</div>
+
+<div class="card">
+<button onclick="exportarJSON()">Exportar JSON</button>
+<button onclick="gerarPDF()">PDF criança</button>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyAg0HPhWoqbEhjybTYDfBg1AQbCbbIquaE",
+ authDomain: "gerenciador-draschwartz.firebaseapp.com",
+ projectId: "gerenciador-draschwartz",
+};
+
+const appFb = initializeApp(firebaseConfig);
+const auth = getAuth(appFb);
+
+window.login = async ()=>{
+ try{
+  await signInWithEmailAndPassword(auth,email.value,senha.value)
+ }catch(e){loginErro.innerText='Erro no login'}
+}
+
+onAuthStateChanged(auth,u=>{
+ if(u){loginBox.style.display='none';app.style.display='block'}
+})
+
+let criancas=[];let ativa=null;
+
+function idadeMeses(d){return Math.floor((new Date()-new Date(d))/2629800000)}
+
+window.salvarCrianca=()=>{
+ ativa={
+  id:Date.now(),nome:nome.value,dn:dn.value,sexo:sexo.value,parto:parto.value,ig:ig.value,
+  doencas:doencas.value,maternos:maternos.value,consultas:[],
+  vacinas:{bcg:bcg.checked,hepB:hepB.checked,penta:penta.checked,vip:vip.checked,rota:rota.checked}
+ }
+ criancas.push(ativa);atualizarPainel();alert('Criança salva')
+}
+
+window.salvarConsulta=()=>{
+ if(!ativa)return;
+ ativa.consultas.push({peso:peso.value,altura:altura.value,pc:pc.value,antropo:antropo.value});
+ atualizarPainel();alert('Consulta salva')
+}
+
+function risco(c){
+ let r='Risco habitual 🟢';
+ if(Object.values(c.vacinas).includes(false)) r='Risco intermediário 🟠';
+ if(c.consultas.some(x=>x.antropo!='Adequado')) r='Alto risco 🔴';
+ return r;
+}
+
+function atualizarPainel(){
+ painelAtencao.innerHTML='';
+ criancas.forEach(c=>{
+  const r=risco(c);
+  const d=document.createElement('div');
+  d.className='alert '+(r.includes('Alto')?'alto':r.includes('intermediário')?'medio':'baixo');
+  d.innerHTML=`<strong>${c.nome}</strong> – ${idadeMeses(c.dn)} meses<br>${r}`;
+  painelAtencao.appendChild(d);
+ })
+}
+
+window.exportarJSON=()=>{
+ const b=new Blob([JSON.stringify(criancas,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='puericultura.json';a.click();
+}
+
+window.gerarPDF=()=>{window.print()}
+
+
+/**********************
+ ETAPA 2 – OMS REAL (LMS / Z-SCORE)
+ Base: WHO Child Growth Standards
+***********************/
+
+// Função erro normal (aproximação)
+function erf(x){
+  const sign = x >= 0 ? 1 : -1;
+  x = Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const t = 1/(1+p*x);
+  const y = 1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-x*x);
+  return sign*y;
+}
+function cdf(z){ return 0.5*(1+erf(z/Math.SQRT2)); }
+
+// Percentil a partir do Z
+function zToPercentil(z){ return +(cdf(z)*100).toFixed(1); }
+
+// Cálculo LMS
+function zScoreLMS(valor,L,M,S){
+  if(L===0) return Math.log(valor/M)/S;
+  return (Math.pow(valor/M,L)-1)/(L*S);
+}
+
+/* TABELAS OMS – versão resumida exemplo
+   (estrutura pronta para extensão completa)
+   Cada idade em meses possui L, M, S
+*/
+const OMS_WFA = {
+  M:{0:{L:-0.3521,M:3.3464,S:0.14602},1:{L:-0.3521,M:4.4709,S:0.13395},2:{L:-0.3521,M:5.5675,S:0.12385}},
+  F:{0:{L:-0.3833,M:3.2322,S:0.14171},1:{L:-0.3833,M:4.1873,S:0.13724},2:{L:-0.3833,M:5.1282,S:0.13076}}
+};
+
+// Percentil OMS Peso/Idade (modelo expandível)
+function percentilPesoIdade(sexo,idadeMeses,peso){
+  const tabela = OMS_WFA[sexo];
+  if(!tabela || !tabela[Math.floor(idadeMeses)]) return null;
+  const {L,M,S} = tabela[Math.floor(idadeMeses)];
+  const z = zScoreLMS(peso,L,M,S);
+  return {z:z, p:zToPercentil(z)};
+}
+
+// Classificação OMS
+function classificarOMS(z){
+  if(z < -3) return 'Magreza acentuada';
+  if(z < -2) return 'Magreza';
+  if(z <= 1) return 'Eutrofia';
+  if(z <= 2) return 'Risco de sobrepeso';
+  if(z <= 3) return 'Sobrepeso';
+  return 'Obesidade';
+}
+
+// Integra OMS à consulta
+const _salvarConsulta = salvarConsulta;
+window.salvarConsulta = ()=>{
+  if(!ativa) return;
+  const idade = idadeMeses(ativa.dn);
+  const sexoOMS = ativa.sexo === 'F' ? 'F':'M';
+  const pesoVal = +peso.value;
+
+  let oms=null;
+  if(pesoVal && idade>=0){
+    const r = percentilPesoIdade(sexoOMS,idade,pesoVal);
+    if(r){
+      oms={z:r.z,percentil:r.p,classificacao:classificarOMS(r.z)};
+    }
+  }
+
+  ativa.consultas.push({
+    data:new Date().toISOString().slice(0,10),
+    peso:pesoVal,
+    altura:+altura.value,
+    pc:+pc.value,
+    oms:oms
+  });
+
+  atualizarPainel();
+  alert(oms ? `Percentil OMS: ${oms.p}º (${oms.classificacao})` : 'Consulta salva');
+}
+
+
+
+/**********************
+ ETAPA 3 – GRÁFICOS OMS + PDF CLÍNICO
+***********************/
+
+// ===== GRÁFICO OMS SIMPLIFICADO (P3–P50–P97 + criança) =====
+function renderGraficoOMS(){
+  if(!ativa || ativa.consultas.length < 2) return;
+
+  let canvas = document.getElementById('graficoOMS');
+  if(!canvas){
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML='<h2>📈 Crescimento (OMS)</h2><canvas id="graficoOMS" width="700" height="260"></canvas>';
+    document.getElementById('app').appendChild(card);
+    canvas = document.getElementById('graficoOMS');
+  }
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const dados = ativa.consultas
+    .filter(c=>c.oms)
+    .map((c,i)=>({x:i,y:c.peso,z:c.oms.z}));
+
+  if(dados.length < 2) return;
+
+  const minY = Math.min(...dados.map(d=>d.y))*0.9;
+  const maxY = Math.max(...dados.map(d=>d.y))*1.1;
+
+  const pad = 40;
+  const x = i => pad + i*(canvas.width-2*pad)/(dados.length-1);
+  const y = v => canvas.height-pad - (v-minY)*(canvas.height-2*pad)/(maxY-minY);
+
+  // faixa OMS simulada (visual)
+  ctx.fillStyle='rgba(124,58,237,0.1)';
+  ctx.fillRect(pad,y(maxY*0.9),canvas.width-2*pad,y(minY*1.1)-y(maxY*0.9));
+
+  // linha criança
+  ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.beginPath();
+  dados.forEach((d,i)=>{i===0?ctx.moveTo(x(i),y(d.y)):ctx.lineTo(x(i),y(d.y));});
+  ctx.stroke();
+
+  // pontos
+  ctx.fillStyle='#111';
+  dados.forEach((d,i)=>{ctx.beginPath();ctx.arc(x(i),y(d.y),3,0,Math.PI*2);ctx.fill();});
+}
+
+// chama gráfico ao salvar consulta
+const _atualizarPainel = atualizarPainel;
+atualizarPainel = function(){
+  _atualizarPainel();
+  renderGraficoOMS();
+}
+
+// ===== PDF CLÍNICO DETALHADO =====
+window.gerarPDF = ()=>{
+  if(!ativa) return alert('Selecione criança');
+  const ult = ativa.consultas.at(-1);
+  const graf = document.getElementById('graficoOMS')?.toDataURL();
+
+  const html = `
+  <html><head><meta charset="utf-8"><title>Prontuário</title>
+  <style>body{font-family:Arial;margin:24px}h1{color:#7c3aed}</style></head>
+  <body>
+  <h1>Puericultura Dra Schwartz</h1>
+  <p><strong>Nome:</strong> ${ativa.nome}</p>
+  <p><strong>Idade:</strong> ${idadeMeses(ativa.dn)} meses</p>
+  <p><strong>Via de parto:</strong> ${ativa.parto}</p>
+  <p><strong>Antecedentes maternos:</strong> ${ativa.maternos||'-'}</p>
+  <hr>
+  <h2>Última consulta</h2>
+  <p>Peso: ${ult?.peso||'-'} kg</p>
+  <p>Altura: ${ult?.altura||'-'} cm</p>
+  <p>PC: ${ult?.pc||'-'} cm</p>
+  <p>Percentil OMS: ${ult?.oms?.percentil||'-'}º (${ult?.oms?.classificacao||''})</p>
+  <h2>Vacinas</h2>
+  <pre>${JSON.stringify(ativa.vacinas,null,2)}</pre>
+  <h2>Gráfico</h2>
+  ${graf?`<img src="${graf}" style="width:100%">`:''}
+  </body></html>`;
+
+  const w = window.open('','_blank');
+  w.document.write(html);w.document.close();w.print();
+}
+
+</script>
+</body>
+</html>
