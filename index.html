@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puericultura Dra Schwartz</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #faf7ff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #7c3aed;
+      font-size: 2rem;
+    }
+    h2 {
+      color: #6b7280;
+      font-size: 1.2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .chip {
+      background-color: #ede9fe;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .chip input {
+      margin-right: 10px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .alert {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .btn {
+      background-color: #7c3aed;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      background-color: #e5e7eb;
+      cursor: not-allowed;
+    }
+    .vacinas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .vacinas label {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Puericultura Dra Schwartz 👶</h1>
+
+  <!-- Cadastro da Criança -->
+  <div class="card">
+    <h2>Identificação da Criança</h2>
+    <div class="grid-3">
+      <div>
+        <label>Nome</label>
+        <input id="nome" placeholder="Nome da criança" />
+      </div>
+      <div>
+        <label>Data de Nascimento</label>
+        <input id="dataNascimento" type="date" />
+      </div>
+      <div>
+        <label>Sexo</label>
+        <select id="sexo">
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div>
+        <label>Nome da Mãe</label>
+        <input id="nomeMae" placeholder="Nome da mãe ou responsável" />
+      </div>
+      <div>
+        <label>Via de Parto</label>
+        <select id="parto">
+          <option value="Vaginal">Vaginal</option>
+          <option value="Cesárea">Cesárea</option>
+        </select>
+      </div>
+      <div>
+        <label>IG ao Nascer (semanas)</label>
+        <input id="igNascimento" type="number" />
+      </div>
+    </div>
+
+    <div>
+      <button class="btn" id="salvarCrianca">Salvar Cadastro</button>
+    </div>
+  </div>
+
+  <!-- Idade Automática -->
+  <div class="card">
+    <h2>Idade Calculada</h2>
+    <div>
+      <label>Idade (em meses):</label>
+      <input id="idadeCrianca" type="number" disabled />
+    </div>
+  </div>
+
+  <!-- Vacinas -->
+  <div class="card">
+    <h2>Vacinas</h2>
+    <div class="vacinas">
+      <div>
+        <label><input type="checkbox" id="vacinaBcg" /> BCG</label>
+      </div>
+      <div>
+        <label><input type="checkbox" id="vacinaHepB" /> Hepatite B</label>
+      </div>
+      <div>
+        <label><input type="checkbox" id="vacinaVIP" /> VIP</label>
+      </div>
+      <div>
+        <label><input type="checkbox" id="vacinaDTP" /> DTP</label>
+      </div>
+      <div>
+        <label><input type="checkbox" id="vacinaHib" /> Hib</label>
+      </div>
+      <div>
+        <label><input type="checkbox" id="vacinaVIP" /> VIP</label>
+      </div>
+    </div>
+
+    <button class="btn" id="salvarVacinas">Salvar Vacinas</button>
+  </div>
+
+  <!-- Alertas de Vacinas -->
+  <div class="alert" id="alertasVacinas" style="display:none;">
+    Algumas vacinas estão atrasadas. Verifique os detalhes.
+  </div>
+
+  <!-- Gerar PDF -->
+  <div class="card">
+    <h2>Prontuário</h2>
+    <button class="btn" id="gerarPdf">Gerar PDF</button>
+  </div>
+
+  <script>
+    // Função para calcular a idade em meses
+    function calcularIdade() {
+      const nascimento = new Date(document.getElementById("dataNascimento").value);
+      const hoje = new Date();
+      const meses = Math.floor(((hoje - nascimento) / (1000 * 60 * 60 * 24 * 30.4375)));
+      document.getElementById("idadeCrianca").value = meses;
+    }
+
+    // Função para salvar os dados da criança no LocalStorage
+    document.getElementById("salvarCrianca").addEventListener("click", () => {
+      const nome = document.getElementById("nome").value;
+      const nomeMae = document.getElementById("nomeMae").value;
+      const sexo = document.getElementById("sexo").value;
+      const parto = document.getElementById("parto").value;
+      const igNascimento = document.getElementById("igNascimento").value;
+      const dataNascimento = document.getElementById("dataNascimento").value;
+      
+      if (!nome || !nomeMae || !sexo || !dataNascimento) {
+        alert("Preencha todos os campos obrigatórios.");
+        return;
+      }
+
+      const crianca = {
+        nome,
+        nomeMae,
+        sexo,
+        parto,
+        igNascimento,
+        dataNascimento,
+        vacinas: []
+      };
+
+      localStorage.setItem("criança", JSON.stringify(crianca));
+      alert("Cadastro salvo com sucesso!");
+      calcularIdade();
+    });
+
+    // Função para salvar vacinas
+    document.getElementById("salvarVacinas").addEventListener("click", () => {
+      const vacinas = [
+        { id: "vacinaBcg", nome: "BCG" },
+        { id: "vacinaHepB", nome: "Hepatite B" },
+        { id: "vacinaVIP", nome: "VIP" },
+        { id: "vacinaDTP", nome: "DTP" },
+        { id: "vacinaHib", nome: "Hib" },
+      ];
+
+      const vacinasAtrasadas = [];
+      vacinas.forEach(vacina => {
+        if (!document.getElementById(vacina.id).checked) {
+          vacinasAtrasadas.push(vacina.nome);
+        }
+      });
+
+      if (vacinasAtrasadas.length > 0) {
+        document.getElementById("alertasVacinas").style.display = "block";
+      } else {
+        document.getElementById("alertasVacinas").style.display = "none";
+      }
+      
+      alert("Vacinas salvas com sucesso!");
+    });
+
+    // Função para gerar PDF (simples, exemplo)
+    document.getElementById("gerarPdf").addEventListener("click", () => {
+      const nome = document.getElementById("nome").value;
+      const idade = document.getElementById("idadeCrianca").value;
+      const vacinas = [
+        { id: "vacinaBcg", nome: "BCG" },
+        { id: "vacinaHepB", nome: "Hepatite B" },
+        { id: "vacinaVIP", nome: "VIP" },
+        { id: "vacinaDTP", nome: "DTP" },
+        { id: "vacinaHib", nome: "Hib" },
+      ];
+      const vacinasFeitas = vacinas.filter(vacina => document.getElementById(vacina.id).checked);
+
+      let pdfContent = `
+        <h1>Prontuário de ${nome}</h1>
+        <p>Idade: ${idade} meses</p>
+        <h2>Vacinas Aplicadas:</h2>
+        <ul>
+      `;
+
+      vacinasFeitas.forEach(vacina => {
+        pdfContent += `<li>${vacina.nome}</li>`;
+      });
+
+      pdfContent += `</ul>`;
+
+      const pdfWindow = window.open("", "_blank");
+      pdfWindow.document.write(pdfContent);
+      pdfWindow.document.close();
+      pdfWindow.print();
+    });
+
+    // Carregar os dados ao carregar a página
+    window.onload = () => {
+      const dadosCrianca = JSON.parse(localStorage.getItem("criança"));
+      if (dadosCrianca) {
+        document.getElementById("nome").value = dadosCrianca.nome;
+        document.getElementById("nomeMae").value = dadosCrianca.nomeMae;
+        document.getElementById("sexo").value = dadosCrianca.sexo;
+        document.getElementById("parto").value = dadosCrianca.parto;
+        document.getElementById("igNascimento").value = dadosCrianca.igNascimento;
+        document.getElementById("dataNascimento").value = dadosCrianca.dataNascimento;
+        calcularIdade();
+      }
+    };
+  </script>
+</body>
+</html>
