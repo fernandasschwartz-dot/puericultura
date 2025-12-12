@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Puericultura – Cadastro, Vacinas e Triagens (PDF geral/individual)</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --muted:#a8b3cf;
+      --text:#eef2ff;
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --radius2:22px;
+      --pad:16px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.35), transparent 60%),
+                  radial-gradient(900px 500px at 100% 10%, rgba(34,197,94,.20), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    header{
+      padding:18px 18px 10px;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,16,32,.65);
+      border-bottom:1px solid var(--border);
+    }
+    header .title{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    header h1{
+      font-size:1.05rem; margin:0; letter-spacing:.2px;
+    }
+    header .sub{
+      font-size:.8rem; color:var(--muted);
+    }
+
+    .container{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:16px;
+      padding:16px;
+      max-width:1300px;
+      margin:0 auto;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius2);
+      padding: var(--pad);
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:.95rem;
+      letter-spacing:.2px;
+    }
+    .card h3{
+      margin:16px 0 8px 0;
+      font-size:.9rem;
+      color:#dbe4ff;
+    }
+    .muted{color:var(--muted)}
+    .small{font-size:.82rem}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .col{flex:1 1 220px}
+    label{display:block; font-size:.82rem; color:#dbe4ff; margin:10px 0 6px}
+    input, select, textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:10px 12px;
+      outline:none;
+    }
+    textarea{min-height:86px; resize:vertical}
+    input::placeholder, textarea::placeholder{color:rgba(238,242,255,.55)}
+    .btnbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    button{
+      border:none;
+      border-radius: 14px;
+      padding:10px 12px;
+      font-weight:650;
+      cursor:pointer;
+      color:var(--text);
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--border);
+      transition:.15s transform ease, .15s background ease;
+      user-select:none;
+    }
+    button:hover{transform: translateY(-1px); background: rgba(255,255,255,.12)}
+    button.primary{background: rgba(124,58,237,.28); border-color: rgba(124,58,237,.55)}
+    button.success{background: rgba(34,197,94,.20); border-color: rgba(34,197,94,.55)}
+    button.warn{background: rgba(245,158,11,.20); border-color: rgba(245,158,11,.55)}
+    button.danger{background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.55)}
+    button:disabled{opacity:.55; cursor:not-allowed; transform:none}
+
+    .list{
+      display:flex; flex-direction:column; gap:10px; margin-top:10px;
+      max-height: calc(100vh - 220px);
+      overflow:auto;
+      padding-right:6px;
+    }
+    .item{
+      padding:12px;
+      border-radius: 16px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+    }
+    .item.active{
+      outline:2px solid rgba(124,58,237,.55);
+      background: rgba(124,58,237,.12);
+    }
+    .item .name{font-weight:750}
+    .item .meta{font-size:.78rem; color:var(--muted); margin-top:2px}
+    .pill{
+      font-size:.72rem; padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.07);
+      color:var(--text);
+      display:inline-flex; gap:6px; align-items:center;
+      white-space:nowrap;
+    }
+    .pill.ok{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.14)}
+    .pill.bad{border-color: rgba(245,158,11,.60); background: rgba(245,158,11,.16)}
+    .pill.riskA{border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.14)}
+    .pill.riskI{border-color: rgba(245,158,11,.60); background: rgba(245,158,11,.16)}
+    .pill.riskH{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.14)}
+    .item .right{display:flex; flex-direction:column; align-items:flex-end; gap:6px}
+    .iconbtn{
+      width:38px; height:38px; display:grid; place-items:center;
+      border-radius: 14px;
+      padding:0;
+    }
+
+    .section{
+      border-top:1px solid var(--border);
+      margin-top:14px; padding-top:12px;
+    }
+
+    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .grid3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+    @media (max-width: 980px){
+      .container{grid-template-columns: 1fr; }
+      .list{max-height:none}
+    }
+
+    .checkgrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px;
+    }
+    @media (max-width: 620px){
+      .checkgrid{grid-template-columns: 1fr}
+      .grid2,.grid3{grid-template-columns:1fr}
+    }
+    .chk{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: rgba(255,255,255,.04);
+    }
+    .chk input{width:auto; margin-top:2px}
+    .chk .lbl{font-size:.82rem; line-height:1.2}
+    .chk .hint{font-size:.74rem; color:var(--muted); margin-top:4px}
+
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid var(--border);
+    }
+    .table th, .table td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      font-size:.82rem;
+      text-align:left;
+    }
+    .table th{background: rgba(255,255,255,.06); color:#dbe4ff}
+    .table tr:last-child td{border-bottom:none}
+
+    /* ===== PRINT ===== */
+    #print_area{display:none}
+    body.print-geral header,
+    body.print-individual header,
+    body.print-geral .container,
+    body.print-individual .container { display:none !important; }
+
+    body.print-geral #print_area,
+    body.print-individual #print_area { display:block !important; }
+
+    @media print{
+      @page { margin: 12mm; }
+      body{
+        background:#fff !important;
+        color:#111 !important;
+      }
+      #print_area{
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      .print_sheet{
+        page-break-after: always;
+      }
+      .print_header{
+        display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+        border-bottom: 2px solid #111;
+        padding-bottom:8px;
+        margin-bottom:12px;
+      }
+      .print_header h2{margin:0; font-size:14pt}
+      .print_header .meta{font-size:10pt; color:#222}
+      .print_block{
+        border:1px solid #ddd;
+        border-radius: 10px;
+        padding:10px;
+        margin:10px 0;
+      }
+      .print_block h3{
+        margin:0 0 8px 0;
+        font-size:11.5pt;
+      }
+      .print_kv{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:6px 12px;
+        font-size:10pt;
+      }
+      .print_kv div{padding:2px 0}
+      .print_list{
+        columns: 2;
+        column-gap: 18px;
+        font-size:10pt;
+        margin:0;
+        padding-left:16px;
+      }
+      .print_list li{margin:2px 0}
+      .print_table{
+        width:100%;
+        border-collapse: collapse;
+        font-size:9.5pt;
+      }
+      .print_table th, .print_table td{
+        border:1px solid #ddd;
+        padding:6px;
+      }
+      .print_note{font-size:9pt; color:#333; margin-top:8px}
+      .no_break{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>Puericultura – Cadastro, Vacinas e Triagens</h1>
+      <div class="sub">PDF geral (todas) e individual (selecionada) • Dados ficam no seu navegador (LocalStorage).</div>
+    </div>
+    <div class="btnbar">
+      <button id="btn_pdf_geral" class="primary">🖨️ PDF geral</button>
+      <button id="btn_pdf_individual" class="success">🧾 PDF individual</button>
+      <button id="btn_export" class="warn">⬇ Exportar JSON</button>
+      <button id="btn_import" class="warn">⬆ Importar JSON</button>
+      <input id="file_import" type="file" accept="application/json" style="display:none" />
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- LEFT -->
+    <aside class="card">
+      <h2>Crianças cadastradas</h2>
+      <div class="btnbar">
+        <button id="btn_nova" class="primary">＋ Nova criança</button>
+        <button id="btn_limpar" class="danger">Limpar seleção</button>
+      </div>
+      <div class="list" id="children_list"></div>
+      <div class="section small muted">
+        Dica: clique em “Selecionar” para editar e para gerar o PDF individual.
+      </div>
+    </aside>
+
+    <!-- RIGHT -->
+    <main class="card">
+      <h2>Cadastro / Atualização</h2>
+
+      <input type="hidden" id="child_id" value="" />
+
+      <div class="row">
+        <div class="col">
+          <label for="ubs_nome">UBS</label>
+          <input id="ubs_nome" type="text" placeholder="Nome da UBS" />
+        </div>
+        <div class="col">
+          <label for="nome">Nome da criança</label>
+          <input id="nome" type="text" placeholder="Nome completo" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="nome_mae">Nome da mãe</label>
+          <input id="nome_mae" type="text" />
+        </div>
+        <div class="col">
+          <label for="sexo">Sexo</label>
+          <select id="sexo">
+            <option value="">—</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="data_nasc">Data de nascimento</label>
+          <input id="data_nasc" type="date" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="via_parto">Via de parto</label>
+          <select id="via_parto">
+            <option value="">—</option>
+            <option value="vaginal">Vaginal</option>
+            <option value="cesarea">Cesárea</option>
+            <option value="forceps">Fórceps</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="ig_semanas">IG (semanas)</label>
+          <input id="ig_semanas" type="number" min="20" max="45" step="1" placeholder="ex: 39" />
+        </div>
+        <div class="col">
+          <label for="peso_nasc">Peso ao nascer (g)</label>
+          <input id="peso_nasc" type="number" min="300" max="7000" step="1" placeholder="ex: 3200" />
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Triagens neonatais</h3>
+        <div class="checkgrid">
+          <div class="chk">
+            <input type="checkbox" id="tri_pezinho_ok" />
+            <div>
+              <div class="lbl"><b>Teste do pezinho</b></div>
+              <div class="row" style="margin-top:6px">
+                <div class="col" style="flex:1 1 160px">
+                  <label for="tri_pezinho_data" style="margin:0 0 6px">Data</label>
+                  <input id="tri_pezinho_data" type="date" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chk">
+            <input type="checkbox" id="tri_orelhinha_ok" />
+            <div>
+              <div class="lbl"><b>Teste da orelhinha</b></div>
+              <label for="tri_orelhinha_data" style="margin:6px 0 6px">Data</label>
+              <input id="tri_orelhinha_data" type="date" />
+            </div>
+          </div>
+
+          <div class="chk">
+            <input type="checkbox" id="tri_olhinho_ok" />
+            <div>
+              <div class="lbl"><b>Teste do olhinho</b></div>
+              <label for="tri_olhinho_data" style="margin:6px 0 6px">Data</label>
+              <input id="tri_olhinho_data" type="date" />
+            </div>
+          </div>
+
+          <div class="chk">
+            <input type="checkbox" id="tri_coracao_ok" />
+            <div>
+              <div class="lbl"><b>Teste do coraçãozinho</b></div>
+              <label for="tri_coracao_data" style="margin:6px 0 6px">Data</label>
+              <input id="tri_coracao_data" type="date" />
+            </div>
+          </div>
+
+          <div class="chk">
+            <input type="checkbox" id="tri_linguinha_ok" />
+            <div>
+              <div class="lbl"><b>Teste da linguinha</b></div>
+              <label for="tri_linguinha_data" style="margin:6px 0 6px">Data</label>
+              <input id="tri_linguinha_data" type="date" />
+            </div>
+          </div>
+
+          <div class="chk">
+            <input type="checkbox" id="tri_outros_ok" />
+            <div>
+              <div class="lbl"><b>Outros</b></div>
+              <label for="tri_outros_txt" style="margin:6px 0 6px">Quais / Observações</label>
+              <input id="tri_outros_txt" type="text" placeholder="Ex: teste X, reteste, pendente..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Vacinas (Calendário Nacional)</h3>
+        <div class="small muted">
+          Marque o que já foi feito. (Influenza e dT podem variar conforme histórico/ano; use “Observações” se necessário.)
+        </div>
+
+        <div class="checkgrid" id="vacinas_group" style="margin-top:10px">
+          <!-- Ao nascer -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="bcg" />
+            <div><div class="lbl"><b>Ao nascer:</b> BCG (dose única)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="hepb" />
+            <div><div class="lbl"><b>Ao nascer:</b> Hepatite B (dose única)</div></div>
+          </div>
+
+          <!-- 2 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="penta1" />
+            <div><div class="lbl"><b>2 meses:</b> Penta (DTP+Hib+HB) 1ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="vip1" />
+            <div><div class="lbl"><b>2 meses:</b> VIP (Polio inativada) 1ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="pneumo1" />
+            <div><div class="lbl"><b>2 meses:</b> Pneumo 10V 1ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="rota1" />
+            <div>
+              <div class="lbl"><b>2 meses:</b> Rotavírus 1ª</div>
+              <div class="hint">Atenção aos prazos do rotavírus.</div>
+            </div>
+          </div>
+
+          <!-- 3 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="meningo_c1" />
+            <div><div class="lbl"><b>3 meses:</b> Meningocócica C 1ª</div></div>
+          </div>
+
+          <!-- 4 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="penta2" />
+            <div><div class="lbl"><b>4 meses:</b> Penta 2ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="vip2" />
+            <div><div class="lbl"><b>4 meses:</b> VIP 2ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="pneumo2" />
+            <div><div class="lbl"><b>4 meses:</b> Pneumo 10V 2ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="rota2" />
+            <div><div class="lbl"><b>4 meses:</b> Rotavírus 2ª</div></div>
+          </div>
+
+          <!-- 5 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="meningo_c2" />
+            <div><div class="lbl"><b>5 meses:</b> Meningocócica C 2ª</div></div>
+          </div>
+
+          <!-- 6 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="penta3" />
+            <div><div class="lbl"><b>6 meses:</b> Penta 3ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="vip3" />
+            <div><div class="lbl"><b>6 meses:</b> VIP 3ª</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="influenza" />
+            <div>
+              <div class="lbl"><b>6 meses:</b> Influenza (dose anual)</div>
+              <div class="hint">Se 1ª vez, pode precisar de 2 doses no ano.</div>
+            </div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="covid1" />
+            <div><div class="lbl"><b>6 meses:</b> COVID-19 1ª dose</div></div>
+          </div>
+
+          <!-- 7 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="covid2" />
+            <div><div class="lbl"><b>7 meses:</b> COVID-19 2ª dose</div></div>
+          </div>
+
+          <!-- 9 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="covid3" />
+            <div><div class="lbl"><b>9 meses:</b> COVID-19 3ª dose</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="febre_amarela1" />
+            <div>
+              <div class="lbl"><b>9 meses:</b> Febre amarela (1 dose)</div>
+              <div class="hint">Pode ser indicada 6–8m em situações especiais.</div>
+            </div>
+          </div>
+
+          <!-- 12 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="pneumo_ref" />
+            <div><div class="lbl"><b>12 meses:</b> Pneumo 10V (reforço)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="meningo_acwy" />
+            <div><div class="lbl"><b>12 meses:</b> Meningocócica ACWY (1 dose)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="scr1" />
+            <div><div class="lbl"><b>12 meses:</b> Tríplice viral (SCR) 1 dose</div></div>
+          </div>
+
+          <!-- 15 meses -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="dtp_ref1" />
+            <div><div class="lbl"><b>15 meses:</b> DTP (1º reforço)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="vip_ref1" />
+            <div><div class="lbl"><b>15 meses:</b> VIP (reforço)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="scrv1" />
+            <div><div class="lbl"><b>15 meses:</b> Tetraviral (SCRV) 1 dose</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="hepa1" />
+            <div><div class="lbl"><b>15 meses:</b> Hepatite A (1 dose)</div></div>
+          </div>
+
+          <!-- 4 anos -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="dtp_ref2" />
+            <div><div class="lbl"><b>4 anos:</b> DTP (2º reforço)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="febre_amarela_ref" />
+            <div><div class="lbl"><b>4 anos:</b> Febre amarela (reforço)</div></div>
+          </div>
+          <div class="chk">
+            <input type="checkbox" data-vacina="varicela2" />
+            <div><div class="lbl"><b>4 anos:</b> Varicela (1 dose)</div></div>
+          </div>
+
+          <!-- 7+ anos -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="dt_7mais" />
+            <div>
+              <div class="lbl"><b>A partir de 7 anos:</b> dT (conforme histórico)</div>
+              <div class="hint">Usar para esquemas em atraso/reforços.</div>
+            </div>
+          </div>
+
+          <!-- 9–14 anos -->
+          <div class="chk">
+            <input type="checkbox" data-vacina="hpv4" />
+            <div><div class="lbl"><b>9 a 14 anos:</b> HPV4 (1 dose)</div></div>
+          </div>
+
+        </div>
+
+        <label for="vacinas_obs">Observações (vacinas)</label>
+        <textarea id="vacinas_obs" placeholder="Ex: Influenza 2 doses (1ª vez), COVID esquema específico, atraso, etc."></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Consultas (histórico)</h3>
+        <div class="row">
+          <div class="col">
+            <label for="data_consulta">Data</label>
+            <input id="data_consulta" type="date" />
+          </div>
+          <div class="col">
+            <label for="peso">Peso (kg)</label>
+            <input id="peso" type="number" step="0.001" min="0" placeholder="ex: 4.350" />
+          </div>
+          <div class="col">
+            <label for="altura">Altura (cm)</label>
+            <input id="altura" type="number" step="0.1" min="0" placeholder="ex: 54.0" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="pc">Perímetro cefálico (cm)</label>
+            <input id="pc" type="number" step="0.1" min="0" />
+          </div>
+          <div class="col">
+            <label for="obs_consulta">Observações</label>
+            <input id="obs_consulta" type="text" placeholder="Ex: ganho ponderal adequado, retorno em X dias." />
+          </div>
+        </div>
+
+        <div class="btnbar" style="margin-top:10px">
+          <button id="btn_salvar" class="success">💾 Salvar/Atualizar criança</button>
+          <button id="btn_add_consulta" class="primary">➕ Adicionar consulta</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <table class="table" id="tbl_consultas">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Peso</th>
+                <th>Altura</th>
+                <th>PC</th>
+                <th>Obs</th>
+                <th style="width:72px">Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PRINT AREA -->
+  <div id="print_area"></div>
+
+  <script>
+    // =========================
+    // Storage
+    // =========================
+    const STORAGE_KEY = "puericultura_children_v2";
+
+    function loadChildren() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveChildren(children) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(children));
+    }
+
+    function uid() {
+      return "c_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    }
+
+    // =========================
+    // State
+    // =========================
+    let children = loadChildren();
+    let activeId = null;
+
+    // =========================
+    // Elements
+    // =========================
+    const elList = document.getElementById("children_list");
+    const elTBody = document.querySelector("#tbl_consultas tbody");
+
+    const f = (id) => document.getElementById(id);
+
+    // Fields
+    const fieldMap = {
+      id: f("child_id"),
+      ubs: f("ubs_nome"),
+      nome: f("nome"),
+      nomeMae: f("nome_mae"),
+      sexo: f("sexo"),
+      dataNasc: f("data_nasc"),
+      viaParto: f("via_parto"),
+      igSemanas: f("ig_semanas"),
+      pesoNasc: f("peso_nasc"),
+      vacinasObs: f("vacinas_obs"),
+      // consulta
+      dataConsulta: f("data_consulta"),
+      peso: f("peso"),
+      altura: f("altura"),
+      pc: f("pc"),
+      obsConsulta: f("obs_consulta"),
+      // triagens
+      tri: {
+        pezinhoOk: f("tri_pezinho_ok"),
+        pezinhoData: f("tri_pezinho_data"),
+        orelhinhaOk: f("tri_orelhinha_ok"),
+        orelhinhaData: f("tri_orelhinha_data"),
+        olhinhoOk: f("tri_olhinho_ok"),
+        olhinhoData: f("tri_olhinho_data"),
+        coracaoOk: f("tri_coracao_ok"),
+        coracaoData: f("tri_coracao_data"),
+        linguinhaOk: f("tri_linguinha_ok"),
+        linguinhaData: f("tri_linguinha_data"),
+        outrosOk: f("tri_outros_ok"),
+        outrosTxt: f("tri_outros_txt"),
+      },
+    };
+
+    // =========================
+    // Vacinas helpers
+    // =========================
+    const VACINAS_LABELS = {
+      bcg: "BCG (ao nascer)",
+      hepb: "Hepatite B (ao nascer)",
+      penta1: "Penta 1ª (2m)",
+      vip1: "VIP 1ª (2m)",
+      pneumo1: "Pneumo 10V 1ª (2m)",
+      rota1: "Rotavírus 1ª (2m)",
+      meningo_c1: "Meningo C 1ª (3m)",
+      penta2: "Penta 2ª (4m)",
+      vip2: "VIP 2ª (4m)",
+      pneumo2: "Pneumo 10V 2ª (4m)",
+      rota2: "Rotavírus 2ª (4m)",
+      meningo_c2: "Meningo C 2ª (5m)",
+      penta3: "Penta 3ª (6m)",
+      vip3: "VIP 3ª (6m)",
+      influenza: "Influenza (6m+ anual)",
+      covid1: "COVID-19 1ª (6m)",
+      covid2: "COVID-19 2ª (7m)",
+      covid3: "COVID-19 3ª (9m)",
+      febre_amarela1: "Febre amarela (9m)",
+      pneumo_ref: "Pneumo 10V reforço (12m)",
+      meningo_acwy: "Meningo ACWY (12m)",
+      scr1: "Tríplice viral SCR (12m)",
+      dtp_ref1: "DTP 1º reforço (15m)",
+      vip_ref1: "VIP reforço (15m)",
+      scrv1: "Tetraviral SCRV (15m)",
+      hepa1: "Hepatite A (15m)",
+      dtp_ref2: "DTP 2º reforço (4a)",
+      febre_amarela_ref: "Febre amarela reforço (4a)",
+      varicela2: "Varicela (4a)",
+      dt_7mais: "dT (≥7a, conforme histórico)",
+      hpv4: "HPV4 (9–14a, 1 dose)",
+    };
+
+    // Vacinas “esperadas” por idade (meses) – para alerta simples
+    // Observação: Influenza é anual (a partir de 6m) e dT depende de histórico; aqui entra como lembrete.
+    function expectedVaccinesByAgeMonths(months) {
+      const exp = [];
+      if (months >= 0) exp.push("bcg","hepb");
+      if (months >= 2) exp.push("penta1","vip1","pneumo1","rota1");
+      if (months >= 3) exp.push("meningo_c1");
+      if (months >= 4) exp.push("penta2","vip2","pneumo2","rota2");
+      if (months >= 5) exp.push("meningo_c2");
+      if (months >= 6) exp.push("penta3","vip3","influenza","covid1");
+      if (months >= 7) exp.push("covid2");
+      if (months >= 9) exp.push("covid3","febre_amarela1");
+      if (months >= 12) exp.push("pneumo_ref","meningo_acwy","scr1");
+      if (months >= 15) exp.push("dtp_ref1","vip_ref1","scrv1","hepa1");
+      if (months >= 48) exp.push("dtp_ref2","febre_amarela_ref","varicela2");
+      if (months >= 84) exp.push("dt_7mais");
+      if (months >= 108) exp.push("hpv4"); // 9 anos = 108 meses
+      return exp;
+    }
+
+    function ageInMonths(dateStr) {
+      if (!dateStr) return null;
+      const d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return null;
+      const now = new Date();
+      let months = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+      if (now.getDate() < d.getDate()) months -= 1;
+      return Math.max(0, months);
+    }
+
+    function getCheckedVaccinesFromUI() {
+      const list = [];
+      document.querySelectorAll('#vacinas_group input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) list.push(cb.dataset.vacina);
+      });
+      return list;
+    }
+
+    // =========================
+    // CRUD: form <-> object
+    // =========================
+    function getFormDataBase() {
+      return {
+        id: fieldMap.id.value || uid(),
+        ubsNome: fieldMap.ubs.value.trim(),
+        nome: fieldMap.nome.value.trim(),
+        nomeMae: fieldMap.nomeMae.value.trim(),
+        sexo: fieldMap.sexo.value,
+        dataNasc: fieldMap.dataNasc.value,
+        viaParto: fieldMap.viaParto.value,
+        igSemanas: fieldMap.igSemanas.value ? Number(fieldMap.igSemanas.value) : null,
+        pesoNascimento: fieldMap.pesoNasc.value ? Number(fieldMap.pesoNasc.value) : null,
+        vacinasObs: fieldMap.vacinasObs.value.trim(),
+        vacinasTomadas: getCheckedVaccinesFromUI(),
+        triagens: {
+          pezinho: { feito: fieldMap.tri.pezinhoOk.checked, data: fieldMap.tri.pezinhoData.value || "" },
+          orelhinha:{ feito: fieldMap.tri.orelhinhaOk.checked, data: fieldMap.tri.orelhinhaData.value || "" },
+          olhinho:  { feito: fieldMap.tri.olhinhoOk.checked, data: fieldMap.tri.olhinhoData.value || "" },
+          coracao:  { feito: fieldMap.tri.coracaoOk.checked, data: fieldMap.tri.coracaoData.value || "" },
+          linguinha:{ feito: fieldMap.tri.linguinhaOk.checked, data: fieldMap.tri.linguinhaData.value || "" },
+          outros:   { feito: fieldMap.tri.outrosOk.checked, texto: fieldMap.tri.outrosTxt.value.trim() },
+        },
+      };
+    }
+
+    function setFormFromChild(child) {
+      activeId = child.id;
+      fieldMap.id.value = child.id || "";
+      fieldMap.ubs.value = child.ubsNome || "";
+      fieldMap.nome.value = child.nome || "";
+      fieldMap.nomeMae.value = child.nomeMae || "";
+      fieldMap.sexo.value = child.sexo || "";
+      fieldMap.dataNasc.value = child.dataNasc || "";
+      fieldMap.viaParto.value = child.viaParto || "";
+      fieldMap.igSemanas.value = child.igSemanas ?? "";
+      fieldMap.pesoNasc.value = child.pesoNascimento ?? "";
+      fieldMap.vacinasObs.value = child.vacinasObs || "";
+
+      // vacinas
+      const taken = new Set(child.vacinasTomadas || []);
+      document.querySelectorAll('#vacinas_group input[type="checkbox"]').forEach(cb => {
+        cb.checked = taken.has(cb.dataset.vacina);
+      });
+
+      // triagens
+      const t = child.triagens || {};
+      fieldMap.tri.pezinhoOk.checked = !!t.pezinho?.feito;
+      fieldMap.tri.pezinhoData.value = t.pezinho?.data || "";
+
+      fieldMap.tri.orelhinhaOk.checked = !!t.orelhinha?.feito;
+      fieldMap.tri.orelhinhaData.value = t.orelhinha?.data || "";
+
+      fieldMap.tri.olhinhoOk.checked = !!t.olhinho?.feito;
+      fieldMap.tri.olhinhoData.value = t.olhinho?.data || "";
+
+      fieldMap.tri.coracaoOk.checked = !!t.coracao?.feito;
+      fieldMap.tri.coracaoData.value = t.coracao?.data || "";
+
+      fieldMap.tri.linguinhaOk.checked = !!t.linguinha?.feito;
+      fieldMap.tri.linguinhaData.value = t.linguinha?.data || "";
+
+      fieldMap.tri.outrosOk.checked = !!t.outros?.feito;
+      fieldMap.tri.outrosTxt.value = t.outros?.texto || "";
+
+      renderChildren();
+      renderConsultas();
+    }
+
+    function clearForm(keepId=false) {
+      if (!keepId) {
+        activeId = null;
+        fieldMap.id.value = "";
+      }
+      fieldMap.ubs.value = "";
+      fieldMap.nome.value = "";
+      fieldMap.nomeMae.value = "";
+      fieldMap.sexo.value = "";
+      fieldMap.dataNasc.value = "";
+      fieldMap.viaParto.value = "";
+      fieldMap.igSemanas.value = "";
+      fieldMap.pesoNasc.value = "";
+      fieldMap.vacinasObs.value = "";
+
+      document.querySelectorAll('#vacinas_group input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+      for (const k of Object.keys(fieldMap.tri)) {
+        const el = fieldMap.tri[k];
+        if (el instanceof HTMLInputElement && el.type === "checkbox") el.checked = false;
+        if (el instanceof HTMLInputElement && el.type !== "checkbox") el.value = "";
+      }
+
+      fieldMap.dataConsulta.value = "";
+      fieldMap.peso.value = "";
+      fieldMap.altura.value = "";
+      fieldMap.pc.value = "";
+      fieldMap.obsConsulta.value = "";
+
+      renderChildren();
+      renderConsultas();
+    }
+
+    // =========================
+    // Rendering list + alerts
+    // =========================
+    function resumoRisco(child) {
+      const months = ageInMonths(child.dataNasc);
+      const exp = months == null ? [] : expectedVaccinesByAgeMonths(months);
+      const taken = new Set(child.vacinasTomadas || []);
+      const missing = exp.filter(v => !taken.has(v)).map(v => VACINAS_LABELS[v] || v);
+
+      if (months == null) {
+        return { pill: "Data nasc. ausente", cls: "pill bad", missing: [] };
+      }
+      if (missing.length === 0) {
+        return { pill: "Vacinas OK p/ idade", cls: "pill ok", missing };
+      }
+      return { pill: `⚠ Faltando (${missing.length})`, cls: "pill bad", missing };
+    }
+
+    function renderChildren() {
+      elList.innerHTML = "";
+      if (!children.length) {
+        elList.innerHTML = `<div class="muted small">Nenhuma criança cadastrada ainda.</div>`;
+        return;
+      }
+
+      children.forEach(child => {
+        const item = document.createElement("div");
+        item.className = "item" + (child.id === activeId ? " active" : "");
+
+        const left = document.createElement("div");
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = child.nome || "Sem nome";
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const metaParts = [];
+        if (child.sexo) metaParts.push(child.sexo === "M" ? "Masculino" : "Feminino");
+        if (child.dataNasc) metaParts.push(child.dataNasc);
+        if (child.ubsNome) metaParts.push(child.ubsNome);
+        meta.textContent = metaParts.join(" • ");
+        left.appendChild(name);
+        left.appendChild(meta);
+
+        const right = document.createElement("div");
+        right.className = "right";
+
+        const v = resumoRisco(child);
+        const pill = document.createElement("div");
+        pill.className = v.cls;
+        pill.textContent = v.pill;
+
+        const btns = document.createElement("div");
+        btns.className = "btnbar";
+        btns.style.gap = "8px";
+
+        const btnSel = document.createElement("button");
+        btnSel.className = "iconbtn";
+        btnSel.title = "Selecionar";
+        btnSel.textContent = "✏️";
+        btnSel.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setFormFromChild(child);
+        });
+
+        const btnDel = document.createElement("button");
+        btnDel.className = "iconbtn danger";
+        btnDel.title = "Remover";
+        btnDel.textContent = "🗑️";
+        btnDel.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!confirm("Remover esta criança e todo o histórico?")) return;
+          children = children.filter(c => c.id !== child.id);
+          if (activeId === child.id) clearForm(false);
+          saveChildren(children);
+          renderChildren();
+          renderConsultas();
+        });
+
+        btns.appendChild(btnSel);
+        btns.appendChild(btnDel);
+
+        right.appendChild(pill);
+        right.appendChild(btns);
+
+        item.appendChild(left);
+        item.appendChild(right);
+
+        // click no card também seleciona
+        item.addEventListener("click", () => setFormFromChild(child));
+
+        elList.appendChild(item);
+      });
+    }
+
+    // =========================
+    // Consultas
+    // =========================
+    function getActiveChild() {
+      if (!activeId) return null;
+      return children.find(c => c.id === activeId) || null;
+    }
+
+    function renderConsultas() {
+      elTBody.innerHTML = "";
+      const child = getActiveChild();
+      if (!child || !(child.consultas || []).length) {
+        elTBody.innerHTML = `<tr><td colspan="6" class="muted">Sem consultas registradas.</td></tr>`;
+        return;
+      }
+      child.consultas.forEach((c, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${c.data || ""}</td>
+          <td>${c.peso ?? ""}</td>
+          <td>${c.altura ?? ""}</td>
+          <td>${c.pc ?? ""}</td>
+          <td>${c.obs || ""}</td>
+          <td>
+            <button class="iconbtn danger" title="Remover consulta" data-del="${idx}">🗑️</button>
+          </td>
+        `;
+        tr.querySelector("[data-del]").addEventListener("click", () => {
+          if (!confirm("Remover esta consulta?")) return;
+          child.consultas.splice(idx, 1);
+          saveChildren(children);
+          renderConsultas();
+          renderChildren();
+        });
+        elTBody.appendChild(tr);
+      });
+    }
+
+    // =========================
+    // Save child
+    // =========================
+    function upsertChild() {
+      const base = getFormDataBase();
+      if (!base.nome) {
+        alert("Informe o nome da criança.");
+        return;
+      }
+      const idx = children.findIndex(c => c.id === base.id);
+      if (idx === -1) {
+        children.unshift({ ...base, consultas: [] });
+      } else {
+        const old = children[idx];
+        children[idx] = { ...old, ...base };
+      }
+      activeId = base.id;
+      saveChildren(children);
+      renderChildren();
+      renderConsultas();
+      alert("Dados salvos.");
+    }
+
+    function addConsulta() {
+      const child = getActiveChild();
+      if (!child) {
+        alert("Selecione uma criança antes de adicionar consulta.");
+        return;
+      }
+      const data = fieldMap.dataConsulta.value;
+      if (!data) {
+        alert("Informe a data da consulta.");
+        return;
+      }
+      const consulta = {
+        data,
+        peso: fieldMap.peso.value ? Number(fieldMap.peso.value).toFixed(3) : "",
+        altura: fieldMap.altura.value ? Number(fieldMap.altura.value).toFixed(1) : "",
+        pc: fieldMap.pc.value ? Number(fieldMap.pc.value).toFixed(1) : "",
+        obs: fieldMap.obsConsulta.value.trim(),
+      };
+      child.consultas = child.consultas || [];
+      child.consultas.push(consulta);
+
+      // limpa campos consulta
+      fieldMap.dataConsulta.value = "";
+      fieldMap.peso.value = "";
+      fieldMap.altura.value = "";
+      fieldMap.pc.value = "";
+      fieldMap.obsConsulta.value = "";
+
+      saveChildren(children);
+      renderConsultas();
+      renderChildren();
+    }
+
+    // =========================
+    // Export / Import
+    // =========================
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(children, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "puericultura_dados.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importJsonFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const json = JSON.parse(reader.result);
+          if (!Array.isArray(json)) {
+            alert("JSON inválido: esperado um array de crianças.");
+            return;
+          }
+          if (!confirm("Substituir TODOS os dados atuais pelos dados do arquivo?")) return;
+          children = json;
+          activeId = null;
+          saveChildren(children);
+          clearForm(false);
+          renderChildren();
+          renderConsultas();
+          alert("Importação concluída.");
+        } catch {
+          alert("Erro ao ler o arquivo JSON.");
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    // =========================
+    // Printing (PDF geral / individual)
+    // =========================
+    function escapeHtml(s) {
+      return String(s || "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+
+    function buildPrintSheet(child) {
+      const months = ageInMonths(child.dataNasc);
+      const exp = months == null ? [] : expectedVaccinesByAgeMonths(months);
+      const taken = new Set(child.vacinasTomadas || []);
+      const missing = exp.filter(v => !taken.has(v)).map(v => VACINAS_LABELS[v] || v);
+
+      const tri = child.triagens || {};
+      function triLine(name, obj, extra="") {
+        const done = obj?.feito ? "✔" : "—";
+        const dt = obj?.data ? ` (${escapeHtml(obj.data)})` : "";
+        return `<li>${done} ${name}${dt}${extra}</li>`;
+      }
+
+      const vacList = (child.vacinasTomadas || []).map(v => `<li>${escapeHtml(VACINAS_LABELS[v] || v)}</li>`).join("");
+      const missList = missing.map(v => `<li>${escapeHtml(v)}</li>`).join("");
+
+      const consultas = (child.consultas || []).slice().sort((a,b) => (a.data||"").localeCompare(b.data||""));
+      const consultasRows = consultas.map(c => `
+        <tr>
+          <td>${escapeHtml(c.data)}</td>
+          <td>${escapeHtml(c.peso)}</td>
+          <td>${escapeHtml(c.altura)}</td>
+          <td>${escapeHtml(c.pc)}</td>
+          <td>${escapeHtml(c.obs)}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <section class="print_sheet">
+          <div class="print_header">
+            <div>
+              <h2>${escapeHtml(child.nome || "Sem nome")}</h2>
+              <div class="meta">
+                ${child.sexo ? escapeHtml(child.sexo === "M" ? "Masculino" : "Feminino") : "—"}
+                • Nasc: ${escapeHtml(child.dataNasc || "—")}
+                • UBS: ${escapeHtml(child.ubsNome || "—")}
+              </div>
+            </div>
+            <div class="meta">
+              Gerado em: ${new Date().toLocaleString("pt-BR")}
+            </div>
+          </div>
+
+          <div class="print_block">
+            <h3>Identificação</h3>
+            <div class="print_kv">
+              <div><b>Mãe:</b> ${escapeHtml(child.nomeMae || "—")}</div>
+              <div><b>Via parto:</b> ${escapeHtml(child.viaParto || "—")}</div>
+              <div><b>IG (semanas):</b> ${child.igSemanas ?? "—"}</div>
+              <div><b>Peso nascer (g):</b> ${child.pesoNascimento ?? "—"}</div>
+              <div><b>Idade (meses):</b> ${months == null ? "—" : months}</div>
+              <div><b>ID:</b> ${escapeHtml(child.id || "")}</div>
+            </div>
+          </div>
+
+          <div class="print_block no_break">
+            <h3>Triagens neonatais</h3>
+            <ul class="print_list">
+              ${triLine("Teste do pezinho", tri.pezinho)}
+              ${triLine("Teste da orelhinha", tri.orelhinha)}
+              ${triLine("Teste do olhinho", tri.olhinho)}
+              ${triLine("Teste do coraçãozinho", tri.coracao)}
+              ${triLine("Teste da linguinha", tri.linguinha)}
+              <li>${tri?.outros?.feito ? "✔" : "—"} Outros: ${escapeHtml(tri?.outros?.texto || "—")}</li>
+            </ul>
+          </div>
+
+          <div class="print_block no_break">
+            <h3>Vacinas marcadas</h3>
+            ${vacList ? `<ul class="print_list">${vacList}</ul>` : `<div class="print_note">Nenhuma vacina marcada.</div>`}
+            ${child.vacinasObs ? `<div class="print_note"><b>Obs:</b> ${escapeHtml(child.vacinasObs)}</div>` : ""}
+          </div>
+
+          <div class="print_block no_break">
+            <h3>Vacinas faltantes para a idade (alerta)</h3>
+            ${missList ? `<ul class="print_list">${missList}</ul>` : `<div class="print_note">Sem faltantes para a idade registrada.</div>`}
+            <div class="print_note">
+              Observação: Influenza é anual e dT depende do histórico; use julgamento clínico e registre em “Obs”.
+            </div>
+          </div>
+
+          <div class="print_block">
+            <h3>Histórico de consultas</h3>
+            <table class="print_table">
+              <thead>
+                <tr>
+                  <th>Data</th><th>Peso</th><th>Altura</th><th>PC</th><th>Obs</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${consultasRows || `<tr><td colspan="5">Sem consultas registradas.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function printIndividual() {
+      const child = getActiveChild();
+      if (!child) {
+        alert("Selecione uma criança para gerar o PDF individual.");
+        return;
+      }
+      const area = document.getElementById("print_area");
+      area.innerHTML = buildPrintSheet(child);
+      document.body.classList.remove("print-geral");
+      document.body.classList.add("print-individual");
+      setTimeout(() => window.print(), 50);
+    }
+
+    function printGeral() {
+      if (!children.length) {
+        alert("Não há crianças cadastradas.");
+        return;
+      }
+      const area = document.getElementById("print_area");
+      area.innerHTML = children.map(buildPrintSheet).join("");
+      document.body.classList.remove("print-individual");
+      document.body.classList.add("print-geral");
+      setTimeout(() => window.print(), 50);
+    }
+
+    window.addEventListener("afterprint", () => {
+      document.body.classList.remove("print-geral");
+      document.body.classList.remove("print-individual");
+      document.getElementById("print_area").innerHTML = "";
+    });
+
+    // =========================
+    // Wire up buttons
+    // =========================
+    document.getElementById("btn_salvar").addEventListener("click", upsertChild);
+    document.getElementById("btn_add_consulta").addEventListener("click", addConsulta);
+
+    document.getElementById("btn_nova").addEventListener("click", () => {
+      clearForm(false);
+      // cria já um id novo no campo escondido para garantir "novo"
+      fieldMap.id.value = uid();
+      activeId = null;
+      renderChildren();
+      renderConsultas();
+    });
+
+    document.getElementById("btn_limpar").addEventListener("click", () => {
+      clearForm(false);
+    });
+
+    document.getElementById("btn_export").addEventListener("click", exportJson);
+    document.getElementById("btn_import").addEventListener("click", () => {
+      document.getElementById("file_import").click();
+    });
+    document.getElementById("file_import").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      importJsonFile(file);
+      e.target.value = "";
+    });
+
+    document.getElementById("btn_pdf_individual").addEventListener("click", printIndividual);
+    document.getElementById("btn_pdf_geral").addEventListener("click", printGeral);
+
+    // Initial render
+    renderChildren();
+    renderConsultas();
+  </script>
+</body>
+</html>
